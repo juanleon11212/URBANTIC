@@ -18,9 +18,8 @@ y Neon administra PostgreSQL. Este despliegue no ejecuta el Compose completo.
 1. Crear cuentas en https://neon.com y https://render.com; puedes usar GitHub.
 2. Subir los archivos de despliegue a una rama del repositorio:
    `render.yaml`, `urbantic/frontend/vercel.json`, esta guia y su enlace en README.
-3. Usar esa misma rama al importar el proyecto en Vercel y Render.
-   La rama local al preparar esta guia era `david-trabajo`; comprueba que los
-   archivos esten en la rama remota elegida.
+3. Usar esa misma rama al importar el proyecto en Vercel y Render. En
+   `juanleon11212/URBANTIC`, la rama de despliegue es `main`.
 
 No subir `.env`, contrasenas ni cadenas de conexion a GitHub.
 
