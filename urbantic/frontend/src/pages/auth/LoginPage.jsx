@@ -44,7 +44,11 @@ export default function LoginPage() {
         {location.state?.registrationSuccess && (
           <div className="auth-success" role="status">
             <Icon name="check" size={18} />
-            <div><strong>Cuenta creada correctamente</strong><span>Ya puedes ingresar con tus nuevas credenciales.</span></div>
+            <div>
+              <strong>Cuenta creada correctamente</strong>
+              <span>Usuario: <b>{location.state.email}</b></span>
+              <span>Ingresa la misma contraseña que acabas de registrar.</span>
+            </div>
           </div>
         )}
         <form onSubmit={handleSubmit} className="form">

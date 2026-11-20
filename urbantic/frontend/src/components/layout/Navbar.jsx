@@ -24,7 +24,7 @@ export default function Navbar() {
             <strong>{roleNames[user.role] || user.role}</strong>
             <small>{user.first_name} {user.last_name}</small>
           </span>
-          <button className="button button-small" type="button" onClick={signOut}>Salir</button>
+          <button className="button button-small" type="button" onClick={signOut}>Cerrar sesión</button>
         </div>
       )}
     </header>
