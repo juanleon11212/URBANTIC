@@ -1,7 +1,7 @@
 const AppError = require('../utils/AppError');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const personNameRegex = /^\p{L}(?:[\p{L}' -]*\p{L})?$/u;
+const personNameRegex = /^\p{L}+(?: \p{L}+)*$/u;
 const phoneRegex = /^\+?[0-9](?:[0-9 ()-]*[0-9])?$/;
 
 function normalizeString(value) {
@@ -82,8 +82,8 @@ function validate(schema) {
 const registerSchema = {
   email: { required: true, type: 'string', email: true, max: 180 },
   password: { required: true, type: 'string', min: 8, max: 100 },
-  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
-  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras y espacios.' },
+  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras y espacios.' },
   phone: { required: false, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono sólo puede contener números y los símbolos +, espacio, paréntesis o guion.' }
 };
 
@@ -93,8 +93,8 @@ const loginSchema = {
 };
 
 const passwordRecoveryIdentitySchema = {
-  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
-  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras y espacios.' },
+  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras y espacios.' },
   email: { required: true, type: 'string', email: true, max: 180 }
 };
 
@@ -104,8 +104,8 @@ const passwordRecoveryResetSchema = {
 };
 
 const profileSchema = {
-  firstName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
-  lastName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  firstName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras y espacios.' },
+  lastName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras y espacios.' },
   phone: { required: false, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono sólo puede contener números y los símbolos +, espacio, paréntesis o guion.' }
 };
 
@@ -145,7 +145,7 @@ const decisionSchema = {
 };
 
 const managedUserSchema = {
-  name: { required: true, type: 'string', min: 3, max: 201, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  name: { required: true, type: 'string', min: 3, max: 201, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras y espacios.' },
   email: { required: true, type: 'string', email: true, max: 180 },
   password: { required: true, type: 'string', min: 8, max: 100 },
   phone: { required: true, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono no tiene un formato válido.' },

@@ -1,8 +1,8 @@
-const personNamePattern = /^\p{L}(?:[\p{L}' -]*\p{L})?$/u;
+const personNamePattern = /^\p{L}+(?: \p{L}+)*$/u;
 const phonePattern = /^\+?[0-9](?:[0-9 ()-]*[0-9])?$/;
 
 export function sanitizePersonName(value) {
-  return value.replace(/[^\p{L}' -]/gu, '').replace(/\s{2,}/g, ' ');
+  return value.replace(/[^\p{L} ]/gu, '').replace(/\s{2,}/g, ' ');
 }
 
 export function sanitizePhone(value) {

@@ -133,7 +133,7 @@ export default function UsersAdmin() {
           </div>
           <div className="technician-form-fields">
             <label>Nombre completo
-              <input value={form.name} onChange={(event) => setForm({ ...form, name: sanitizePersonName(event.target.value) })} autoComplete="name" placeholder="Nombre y apellido" minLength="3" maxLength="201" required />
+              <input value={form.name} onChange={(event) => setForm({ ...form, name: sanitizePersonName(event.target.value) })} autoComplete="name" placeholder="Solo letras" minLength="3" maxLength="201" required />
             </label>
             <label>Correo electrónico
               <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} autoComplete="email" placeholder="nombre@urbantic.bo" required />
