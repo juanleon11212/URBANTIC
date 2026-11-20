@@ -5,13 +5,14 @@ import { useReports } from '../../context/ReportsContext.jsx';
 import ReportTable from '../../components/reports/ReportTable.jsx';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
-import { sortCitizenReports } from '../../data/reportData.js';
+import { getReportCreationDate, sortCitizenReports } from '../../data/reportData.js';
 
 export default function ReportsCiudadano() {
   const { user } = useAuth();
   const { reports } = useReports();
   const [scope, setScope] = useState('TODOS');
   const [status, setStatus] = useState('TODOS');
+  const [createdDate, setCreatedDate] = useState('');
   const [search, setSearch] = useState('');
 
   const filteredReports = useMemo(() => {
@@ -19,11 +20,12 @@ export default function ReportsCiudadano() {
     const matchingReports = reports.filter((report) => {
       const matchesScope = scope === 'TODOS' || Number(report.citizenId) === Number(user.id);
       const matchesStatus = status === 'TODOS' || report.status === status;
+      const matchesCreatedDate = !createdDate || getReportCreationDate(report) === createdDate;
       const matchesSearch = !term || `${report.id} ${report.title} ${report.type} ${report.location} ${report.zone || ''}`.toLowerCase().includes(term);
-      return matchesScope && matchesStatus && matchesSearch;
+      return matchesScope && matchesStatus && matchesCreatedDate && matchesSearch;
     });
     return sortCitizenReports(matchingReports);
-  }, [reports, scope, search, status, user.id]);
+  }, [createdDate, reports, scope, search, status, user.id]);
 
   return (
     <section className="surface-card page-card">
@@ -57,6 +59,9 @@ export default function ReportsCiudadano() {
             <option value="CERRADO">Cerrado</option>
             <option value="RECHAZADO">Rechazado</option>
           </select>
+        </label>
+        <label>Fecha de creación
+          <input type="date" value={createdDate} onChange={(event) => setCreatedDate(event.target.value)} />
         </label>
         <label className="search-field">Buscar
           <span><Icon name="search" size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Código, título o ubicación..." /></span>

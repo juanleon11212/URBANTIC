@@ -1,19 +1,20 @@
 import { useMemo, useState } from 'react';
 import { useReports } from '../../context/ReportsContext.jsx';
-import { REPORT_PRIORITIES, REPORT_STATUSES, REPORT_TYPES } from '../../data/reportData.js';
+import { getReportCreationDate, REPORT_PRIORITIES, REPORT_STATUSES, REPORT_TYPES } from '../../data/reportData.js';
 import ReportTable from '../../components/reports/ReportTable.jsx';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
 
 export default function ReportsAdmin() {
   const { reports } = useReports();
-  const [filters, setFilters] = useState({ type: 'TODOS', status: 'TODOS', priority: 'TODAS', search: '' });
+  const [filters, setFilters] = useState({ type: 'TODOS', status: 'TODOS', priority: 'TODAS', createdDate: '', search: '' });
 
   const filteredReports = useMemo(() => reports.filter((report) => {
     const term = filters.search.trim().toLowerCase();
     return (filters.type === 'TODOS' || report.type === filters.type)
       && (filters.status === 'TODOS' || report.status === filters.status)
       && (filters.priority === 'TODAS' || report.priority === filters.priority)
+      && (!filters.createdDate || getReportCreationDate(report) === filters.createdDate)
       && (!term || `${report.id} ${report.title} ${report.location} ${report.zone}`.toLowerCase().includes(term));
   }), [filters, reports]);
 
@@ -43,6 +44,9 @@ export default function ReportsAdmin() {
             <option value="TODAS">Todas</option>
             {Object.entries(REPORT_PRIORITIES).map(([value, item]) => <option value={value} key={value}>{item.label}</option>)}
           </select>
+        </label>
+        <label>Fecha de creación
+          <input name="createdDate" type="date" value={filters.createdDate} onChange={setFilter} />
         </label>
         <label className="search-field">Buscar
           <span><Icon name="search" size={17} /><input name="search" value={filters.search} onChange={setFilter} placeholder="Código, título o zona..." /></span>

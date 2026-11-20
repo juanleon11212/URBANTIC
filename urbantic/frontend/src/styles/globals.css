@@ -246,9 +246,9 @@ label, .field-label {
 
 .filter-bar { align-items: end; background: #f6f9fa; border: 1px solid #e1e8ed; border-radius: 10px; display: grid; gap: 12px; margin-bottom: 20px; padding: 14px; }
 .admin-filters { grid-template-columns: 150px 160px minmax(220px, 1fr) auto; }
-.admin-report-filters { grid-template-columns: 130px 145px 130px minmax(210px, 1fr) auto; }
+.admin-report-filters { grid-template-columns: 115px 130px 115px 155px minmax(190px, 1fr) auto; }
 .simple-filter { grid-template-columns: 220px 1fr; }
-.citizen-report-filters { grid-template-columns: 185px 165px minmax(240px, 1fr) auto; }
+.citizen-report-filters { grid-template-columns: 175px 150px 155px minmax(220px, 1fr) auto; }
 .result-count { align-self: center; color: var(--muted); font-size: .7rem; font-weight: 700; justify-self: end; padding: 8px; }
 .search-field span { align-items: center; display: flex; position: relative; }
 .search-field svg { color: #81929e; left: 12px; position: absolute; }

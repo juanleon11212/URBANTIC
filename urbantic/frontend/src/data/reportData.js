@@ -31,6 +31,15 @@ export function getPriority(priority) {
   return REPORT_PRIORITIES[priority] || REPORT_PRIORITIES.MEDIA;
 }
 
+export function getReportCreationDate(report) {
+  if (!report?.createdAt) return '';
+  const createdAt = new Date(report.createdAt);
+  if (Number.isNaN(createdAt.getTime())) return '';
+
+  const localDate = new Date(createdAt.getTime() - createdAt.getTimezoneOffset() * 60_000);
+  return localDate.toISOString().slice(0, 10);
+}
+
 const CITIZEN_STATUS_ORDER = {
   EN_PROCESO: 0,
   ASIGNADO: 1,
