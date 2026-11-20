@@ -24,16 +24,26 @@ export default function AdminReportDetail() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    Promise.all([usersApi.listTechnicians(), categoriesApi.list()])
-      .then(([technicianList, categoryList]) => {
-        setTechnicians(technicianList);
-        setCategories(categoryList);
-      })
+    categoriesApi.list()
+      .then(setCategories)
       .catch(() => setError('No se pudieron cargar los datos de gestión.'));
     fetchReport(id).catch((apiError) => {
       setError(apiError.response?.data?.message || 'No se pudo actualizar el detalle del reporte.');
     });
   }, [id]);
+
+  useEffect(() => {
+    if (!categoryId) {
+      setTechnicians([]);
+      return;
+    }
+    usersApi.listTechnicians(categoryId)
+      .then((technicianList) => {
+        setTechnicians(technicianList);
+        setTechnician((current) => current && technicianList.some((item) => Number(item.id) === Number(current)) ? current : '');
+      })
+      .catch(() => setError('No se pudieron cargar los técnicos compatibles con la categoría.'));
+  }, [categoryId]);
 
   useEffect(() => {
     if (!report) return;
@@ -130,15 +140,16 @@ export default function AdminReportDetail() {
           <section className="surface-card compact-card">
             <span className="panel-icon orange"><Icon name="user" /></span>
             <h2>Asignar técnico</h2>
-            <p>La carga activa ayuda a distribuir el trabajo de forma equilibrada.</p>
+            <p>Sólo se muestran técnicos activos con especialidad compatible. La carga ayuda a distribuir el trabajo.</p>
             <label>Técnico
               <select value={technician} onChange={(event) => setTechnician(event.target.value)} disabled={!canAssign}>
-                <option value="">Seleccionar técnico</option>
+                <option value="">{categoryId ? 'Seleccionar técnico compatible' : 'Primero selecciona una categoría'}</option>
                 {technicians.map((item) => (
-                  <option value={item.id} key={item.id}>{item.name} · {item.workload} activa{item.workload === 1 ? '' : 's'}</option>
+                  <option value={item.id} key={item.id}>{item.name} · {item.specialty} · {item.workload} activa{item.workload === 1 ? '' : 's'}</option>
                 ))}
               </select>
             </label>
+            {categoryId && technicians.length === 0 && <small className="locked-helper">No hay técnicos activos para esta especialidad. Crea uno desde Usuarios y técnicos.</small>}
             <button className="button button-dark button-full" type="button" onClick={assignTechnician} disabled={!canAssign || !technician || saving}>Asignar reporte</button>
           </section>
 

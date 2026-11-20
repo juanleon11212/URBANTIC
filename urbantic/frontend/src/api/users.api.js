@@ -5,8 +5,8 @@ export async function list() {
   return response.data.data.users;
 }
 
-export async function listTechnicians() {
-  const response = await api.get('/users/technicians');
+export async function listTechnicians(categoryId) {
+  const response = await api.get('/users/technicians', { params: categoryId ? { categoryId } : {} });
   return response.data.data.users;
 }
 
