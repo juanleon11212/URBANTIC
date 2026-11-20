@@ -408,6 +408,9 @@ label, .field-label {
 .profile-summary h2 { margin: 0 0 4px; }
 .profile-summary > span:not(.profile-avatar) { color: var(--blue); font-size: .7rem; font-weight: 800; text-transform: capitalize; }
 .profile-summary small { color: var(--muted); font-size: .65rem; margin-top: 11px; word-break: break-all; }
+.profile-form.is-readonly input:disabled { background: #f2f5f7; border-color: #dfe6ea; color: #526875; cursor: default; opacity: 1; }
+.profile-lock-note { align-items: center; background: #f2f7f9; border: 1px solid #dce7ec; border-radius: 8px; color: #607784; display: flex; font-size: .68rem; font-weight: 700; gap: 7px; margin: 0; padding: 10px 12px; }
+.profile-lock-note svg { color: var(--blue); flex: 0 0 auto; }
 .form { display: grid; gap: 15px; }
 .form-row { display: grid; gap: 13px; grid-template-columns: 1fr 1fr; }
 .form-error { color: #b42318; font-size: .72rem; font-weight: 700; margin: 0; }
