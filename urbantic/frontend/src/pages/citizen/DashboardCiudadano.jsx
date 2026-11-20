@@ -28,8 +28,8 @@ export default function DashboardCiudadano() {
       <section className="stats-grid stats-grid-4" aria-label="Resumen de reportes">
         <StatCard value={reports.length} label="Reportes ciudadanos" tone="blue" icon="users" />
         <StatCard value={ownReports.length} label="Mis reportes" tone="blue" icon="reports" />
-        <StatCard value={ownReports.filter((report) => ['EN_REVISION', 'ASIGNADO', 'EN_PROCESO'].includes(report.status)).length} label="En seguimiento" tone="orange" icon="clock" />
-        <StatCard value={ownReports.filter((report) => ['RESUELTO', 'CERRADO'].includes(report.status)).length} label="Terminados" tone="green" icon="check" />
+        <StatCard value={reports.filter((report) => ['EN_REVISION', 'ASIGNADO', 'EN_PROCESO'].includes(report.status)).length} label="En seguimiento" tone="orange" icon="clock" />
+        <StatCard value={reports.filter((report) => ['RESUELTO', 'CERRADO'].includes(report.status)).length} label="Terminados" tone="green" icon="check" />
       </section>
 
       <section className="surface-card">
