@@ -30,7 +30,7 @@ export default function ReportsCiudadano() {
       <PageHeader
         eyebrow="Participación ciudadana"
         title="Reportes ciudadanos"
-        description="Los reportes activos y prioritarios aparecen primero; los terminados quedan al final."
+        description="Los reportes se agrupan por su estado de atención y los finalizados quedan al final."
         action={(
           <Link className="button button-primary" to="/ciudadano/reportes/nuevo">
             <Icon name="add" size={17} /> Nuevo reporte

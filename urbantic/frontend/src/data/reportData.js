@@ -31,23 +31,26 @@ export function getPriority(priority) {
   return REPORT_PRIORITIES[priority] || REPORT_PRIORITIES.MEDIA;
 }
 
-const FINAL_REPORT_STATUSES = new Set(['RESUELTO', 'CERRADO', 'RECHAZADO']);
+const CITIZEN_STATUS_ORDER = {
+  EN_PROCESO: 0,
+  ASIGNADO: 1,
+  EN_REVISION: 2,
+  CREADO: 2,
+  RESUELTO: 3,
+  CERRADO: 4,
+  RECHAZADO: 5
+};
 const PRIORITY_ORDER = { CRITICA: 0, ALTA: 1, MEDIA: 2, BAJA: 3 };
 
 export function sortCitizenReports(reports) {
   return [...reports].sort((first, second) => {
-    const firstIsFinal = FINAL_REPORT_STATUSES.has(first.status) ? 1 : 0;
-    const secondIsFinal = FINAL_REPORT_STATUSES.has(second.status) ? 1 : 0;
+    const statusDifference = (CITIZEN_STATUS_ORDER[first.status] ?? CITIZEN_STATUS_ORDER.EN_REVISION)
+      - (CITIZEN_STATUS_ORDER[second.status] ?? CITIZEN_STATUS_ORDER.EN_REVISION);
+    if (statusDifference !== 0) return statusDifference;
 
-    if (firstIsFinal !== secondIsFinal) {
-      return firstIsFinal - secondIsFinal;
-    }
-
-    if (!firstIsFinal) {
-      const priorityDifference = (PRIORITY_ORDER[first.priority] ?? PRIORITY_ORDER.MEDIA)
-        - (PRIORITY_ORDER[second.priority] ?? PRIORITY_ORDER.MEDIA);
-      if (priorityDifference !== 0) return priorityDifference;
-    }
+    const priorityDifference = (PRIORITY_ORDER[first.priority] ?? PRIORITY_ORDER.MEDIA)
+      - (PRIORITY_ORDER[second.priority] ?? PRIORITY_ORDER.MEDIA);
+    if (priorityDifference !== 0) return priorityDifference;
 
     const dateDifference = new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime();
     if (dateDifference !== 0) return dateDifference;

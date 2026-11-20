@@ -36,8 +36,8 @@ export default function DashboardCiudadano() {
       <section className="surface-card">
         <PageHeader
           eyebrow="Actividad ciudadana"
-          title="Reportes prioritarios de la comunidad"
-          description="Los casos activos aparecen por prioridad y los terminados se muestran al final."
+          title="Reportes de la comunidad"
+          description="Los casos en proceso aparecen primero y los estados finalizados se muestran al final."
           action={<Link className="text-link" to="/ciudadano/reportes">Ver todos <Icon name="arrow" size={15} /></Link>}
         />
         <ReportTable
