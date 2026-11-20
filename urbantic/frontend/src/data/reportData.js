@@ -3,7 +3,8 @@ export const REPORT_TYPES = [
   { value: 'Luminaria', label: 'Luminaria', color: '#8b5cf6' },
   { value: 'Basura', label: 'Basura', color: '#10b981' },
   { value: 'Semáforo', label: 'Semáforo', color: '#ef4444' },
-  { value: 'Agua', label: 'Fuga de agua', color: '#0ea5e9' }
+  { value: 'Agua', label: 'Fuga de agua', color: '#0ea5e9' },
+  { value: 'Alcantarillado', label: 'Alcantarillado', color: '#0f766e' }
 ];
 
 export const REPORT_STATUSES = {

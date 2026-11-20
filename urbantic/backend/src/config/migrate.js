@@ -94,7 +94,8 @@ const applicationSchema = `
     ('LUMINARIA', 'Luminaria', '#8b5cf6'),
     ('BASURA', 'Basura', '#10b981'),
     ('SEMAFORO', 'Semáforo', '#ef4444'),
-    ('AGUA', 'Agua', '#0ea5e9')
+    ('AGUA', 'Agua', '#0ea5e9'),
+    ('ALCANTARILLADO', 'Alcantarillado', '#0f766e')
   ON CONFLICT (code) DO UPDATE
   SET name = EXCLUDED.name, color = EXCLUDED.color, updated_at = CURRENT_TIMESTAMP;
 
@@ -117,7 +118,7 @@ const applicationSchema = `
   INNER JOIN roles role ON role.id = u.role_id AND role.code = 'TECNICO'
   INNER JOIN report_categories c ON (
     (LOWER(u.email) = 'electricidad@urbantic.bo' AND c.code IN ('LUMINARIA', 'SEMAFORO'))
-    OR (LOWER(u.email) = 'agua@urbantic.bo' AND c.code = 'AGUA')
+    OR (LOWER(u.email) = 'agua@urbantic.bo' AND c.code IN ('AGUA', 'ALCANTARILLADO'))
     OR (LOWER(u.email) = 'vias@urbantic.bo' AND c.code = 'BACHE')
     OR (LOWER(u.email) = 'limpieza@urbantic.bo' AND c.code = 'BASURA')
     OR (LOWER(u.email) = 'tecnico@urbantic.test')
