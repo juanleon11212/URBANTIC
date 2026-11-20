@@ -92,6 +92,17 @@ const loginSchema = {
   password: { required: true, type: 'string', min: 1, max: 100 }
 };
 
+const passwordRecoveryIdentitySchema = {
+  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  email: { required: true, type: 'string', email: true, max: 180 }
+};
+
+const passwordRecoveryResetSchema = {
+  recoveryToken: { required: true, type: 'string', min: 20, max: 2000 },
+  newPassword: { required: true, type: 'string', min: 8, max: 100 }
+};
+
 const profileSchema = {
   firstName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
   lastName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
@@ -150,6 +161,8 @@ module.exports = {
   validate,
   registerSchema,
   loginSchema,
+  passwordRecoveryIdentitySchema,
+  passwordRecoveryResetSchema,
   profileSchema,
   reportSchema,
   assignmentSchema,

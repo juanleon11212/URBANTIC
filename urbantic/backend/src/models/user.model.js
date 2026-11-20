@@ -43,6 +43,21 @@ async function findById(id) {
   return result.rows[0] || null;
 }
 
+async function findByIdWithPassword(id) {
+  const result = await db.query(
+    `
+      SELECT ${publicFields}, u.password_hash
+      FROM users u
+      INNER JOIN roles r ON r.id = u.role_id
+      WHERE u.id = $1
+      LIMIT 1
+    `,
+    [id]
+  );
+
+  return result.rows[0] || null;
+}
+
 async function createCitizen({ email, passwordHash, firstName, lastName, phone }) {
   const result = await db.query(
     `
@@ -96,6 +111,20 @@ async function updateProfile(id, fields) {
   }
 
   return findById(id);
+}
+
+async function updatePassword(id, passwordHash) {
+  const result = await db.query(
+    `
+      UPDATE users
+      SET password_hash = $2, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1 AND is_active = TRUE
+      RETURNING id
+    `,
+    [id, passwordHash]
+  );
+
+  return result.rowCount > 0;
 }
 
 async function listAll() {
@@ -198,8 +227,10 @@ async function setActive(id, active) {
 module.exports = {
   findByEmail,
   findById,
+  findByIdWithPassword,
   createCitizen,
   updateProfile,
+  updatePassword,
   listAll,
   listTechnicians,
   createManaged,

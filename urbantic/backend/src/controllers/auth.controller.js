@@ -28,6 +28,34 @@ async function login(req, res, next) {
   }
 }
 
+async function verifyPasswordRecoveryIdentity(req, res, next) {
+  try {
+    const data = await authService.verifyPasswordRecoveryIdentity(req.body);
+
+    res.json({
+      success: true,
+      message: 'Datos validados correctamente.',
+      data
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function resetPassword(req, res, next) {
+  try {
+    await authService.resetPassword(req.body);
+
+    res.json({
+      success: true,
+      message: 'Contraseña actualizada correctamente.',
+      data: null
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function me(req, res, next) {
   try {
     const user = await authService.getMe(req.user.sub);
@@ -59,6 +87,8 @@ async function updateProfile(req, res, next) {
 module.exports = {
   register,
   login,
+  verifyPasswordRecoveryIdentity,
+  resetPassword,
   me,
   updateProfile
 };
