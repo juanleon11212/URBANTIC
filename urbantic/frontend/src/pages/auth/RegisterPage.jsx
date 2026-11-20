@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import { getApiErrorMessage, isValidPersonName, isValidPhone, sanitizePersonName, sanitizePhone } from '../../utils/inputValidation.js';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -15,19 +16,36 @@ export default function RegisterPage() {
   }
 
   function handleChange(event) {
-    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    const sanitizedValue = ['firstName', 'lastName'].includes(name)
+      ? sanitizePersonName(value)
+      : name === 'phone' ? sanitizePhone(value) : value;
+    setForm((current) => ({ ...current, [name]: sanitizedValue }));
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError('');
+
+    if (!isValidPersonName(form.firstName)) {
+      setError('El nombre debe tener al menos 2 letras y no puede contener números.');
+      return;
+    }
+    if (!isValidPersonName(form.lastName)) {
+      setError('El apellido debe tener al menos 2 letras y no puede contener números.');
+      return;
+    }
+    if (!isValidPhone(form.phone)) {
+      setError('El teléfono debe tener al menos 7 caracteres y contener únicamente números o símbolos telefónicos válidos.');
+      return;
+    }
     setSubmitting(true);
 
     try {
       await signUp(form);
       navigate('/login', { replace: true, state: { registrationSuccess: true, email: form.email } });
     } catch (apiError) {
-      setError(apiError.response?.data?.message || 'No se pudo crear la cuenta. Revisa los datos e inténtalo nuevamente.');
+      setError(getApiErrorMessage(apiError, 'No se pudo crear la cuenta. Revisa los datos e inténtalo nuevamente.'));
     } finally {
       setSubmitting(false);
     }
@@ -43,14 +61,14 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="form">
           <div className="form-row">
             <label>Nombre
-              <input name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" minLength="2" required />
+              <input name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" minLength="2" maxLength="100" placeholder="Sólo letras" required />
             </label>
             <label>Apellido
-              <input name="lastName" value={form.lastName} onChange={handleChange} autoComplete="family-name" minLength="2" required />
+              <input name="lastName" value={form.lastName} onChange={handleChange} autoComplete="family-name" minLength="2" maxLength="100" placeholder="Sólo letras" required />
             </label>
           </div>
           <label>Teléfono <span className="optional-label">Opcional</span>
-            <input name="phone" type="tel" value={form.phone} onChange={handleChange} autoComplete="tel" placeholder="Ej. 70000000" />
+            <input name="phone" type="tel" value={form.phone} onChange={handleChange} autoComplete="tel" inputMode="tel" minLength="7" maxLength="30" placeholder="Ej. 70000000" />
           </label>
           <label>Correo electrónico
             <input name="email" type="email" value={form.email} onChange={handleChange} autoComplete="email" placeholder="tu@correo.com" required />

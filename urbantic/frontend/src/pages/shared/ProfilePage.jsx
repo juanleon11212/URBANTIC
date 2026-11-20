@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import { getApiErrorMessage, isValidPersonName, isValidPhone, sanitizePersonName, sanitizePhone } from '../../utils/inputValidation.js';
 
 export default function ProfilePage() {
   const { user, saveProfile } = useAuth();
@@ -15,9 +16,13 @@ export default function ProfilePage() {
   const [submitting, setSubmitting] = useState(false);
 
   function handleChange(event) {
+    const { name, value } = event.target;
+    const sanitizedValue = ['firstName', 'lastName'].includes(name)
+      ? sanitizePersonName(value)
+      : name === 'phone' ? sanitizePhone(value) : value;
     setForm((current) => ({
       ...current,
-      [event.target.name]: event.target.value
+      [name]: sanitizedValue
     }));
   }
 
@@ -25,13 +30,22 @@ export default function ProfilePage() {
     event.preventDefault();
     setMessage('');
     setError('');
+
+    if (!isValidPersonName(form.firstName) || !isValidPersonName(form.lastName)) {
+      setError('Nombre y apellido deben contener solamente letras y tener al menos 2 caracteres.');
+      return;
+    }
+    if (!isValidPhone(form.phone)) {
+      setError('Ingresa un teléfono válido de al menos 7 caracteres.');
+      return;
+    }
     setSubmitting(true);
 
     try {
       await saveProfile(form);
       setMessage('Perfil actualizado correctamente.');
     } catch (apiError) {
-      setError(apiError.response?.data?.message || 'No se pudo actualizar el perfil.');
+      setError(getApiErrorMessage(apiError, 'No se pudo actualizar el perfil.'));
     } finally {
       setSubmitting(false);
     }
@@ -49,10 +63,10 @@ export default function ProfilePage() {
         </aside>
         <form onSubmit={handleSubmit} className="form profile-form">
           <div className="form-row">
-            <label>Nombre<input name="firstName" value={form.firstName} onChange={handleChange} required /></label>
-            <label>Apellido<input name="lastName" value={form.lastName} onChange={handleChange} required /></label>
+            <label>Nombre<input name="firstName" value={form.firstName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Sólo letras" required /></label>
+            <label>Apellido<input name="lastName" value={form.lastName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Sólo letras" required /></label>
           </div>
-          <label>Teléfono<input name="phone" value={form.phone} onChange={handleChange} placeholder="Ej. 71234567" /></label>
+          <label>Teléfono<input name="phone" type="tel" value={form.phone} onChange={handleChange} inputMode="tel" minLength="7" maxLength="30" placeholder="Ej. 71234567" /></label>
           <label>Correo<input value={user.email} disabled /></label>
           {message && <p className="form-success"><Icon name="check" size={16} /> {message}</p>}
           {error && <p className="form-error">{error}</p>}
