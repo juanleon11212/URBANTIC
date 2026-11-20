@@ -1,18 +1,29 @@
 const bcrypt = require('bcrypt');
 const userModel = require('../models/user.model');
+const categoryModel = require('../models/category.model');
 const AppError = require('../utils/AppError');
 
 async function list() {
   return userModel.listAll();
 }
 
-async function technicians() {
-  return userModel.listTechnicians();
+async function technicians(categoryId) {
+  const parsedCategoryId = categoryId ? Number.parseInt(categoryId, 10) : null;
+  if (categoryId && (!Number.isInteger(parsedCategoryId) || parsedCategoryId <= 0)) {
+    throw new AppError('La categoría indicada no es válida.', 400);
+  }
+  return userModel.listTechnicians(parsedCategoryId);
 }
 
 async function create(payload) {
   const existing = await userModel.findByEmail(payload.email);
   if (existing) throw new AppError('El correo ya está registrado.', 409);
+
+  const categoryIds = [...new Set(payload.categoryIds.map(Number))];
+  const categories = await categoryModel.findActiveByIds(categoryIds);
+  if (categories.length !== categoryIds.length) {
+    throw new AppError('Una o más especialidades seleccionadas no están disponibles.', 400);
+  }
 
   const names = payload.name.trim().split(/\s+/);
   const firstName = names.shift();
@@ -23,7 +34,9 @@ async function create(payload) {
     lastName,
     email: payload.email,
     passwordHash,
-    role: payload.role
+    phone: payload.phone,
+    active: payload.active !== false,
+    categoryIds
   });
 
   return {
@@ -32,7 +45,10 @@ async function create(payload) {
     email: user.email,
     role: user.role_name,
     roleCode: user.role,
-    active: user.is_active
+    phone: user.phone,
+    active: user.is_active,
+    categoryIds,
+    categoryNames: categories.map((category) => category.name)
   };
 }
 

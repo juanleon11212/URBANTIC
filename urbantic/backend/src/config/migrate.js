@@ -11,6 +11,13 @@ const applicationSchema = `
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
+  CREATE TABLE IF NOT EXISTS technician_categories (
+    technician_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    category_id INTEGER NOT NULL REFERENCES report_categories(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (technician_id, category_id)
+  );
+
   CREATE TABLE IF NOT EXISTS reports (
     id SERIAL PRIMARY KEY,
     citizen_id INTEGER NOT NULL REFERENCES users(id),
@@ -79,6 +86,7 @@ const applicationSchema = `
   CREATE INDEX IF NOT EXISTS report_history_report_id_index ON report_status_history(report_id);
   CREATE INDEX IF NOT EXISTS report_assignments_report_id_index ON report_assignments(report_id);
   CREATE INDEX IF NOT EXISTS report_assignments_technician_id_index ON report_assignments(technician_id);
+  CREATE INDEX IF NOT EXISTS technician_categories_category_id_index ON technician_categories(category_id);
 
   INSERT INTO report_categories (code, name, color)
   VALUES
@@ -89,6 +97,32 @@ const applicationSchema = `
     ('AGUA', 'Agua', '#0ea5e9')
   ON CONFLICT (code) DO UPDATE
   SET name = EXCLUDED.name, color = EXCLUDED.color, updated_at = CURRENT_TIMESTAMP;
+
+  INSERT INTO users (role_id, email, password_hash, first_name, last_name, phone, is_active)
+  SELECT role.id, seed.email, '$2b$10$mYBnzMIIBRrD2kk2K9ASJuaaqxjNN08HA2OiNa8.r6uwmokeNhBaO',
+    seed.first_name, seed.last_name, seed.phone, TRUE
+  FROM roles role
+  CROSS JOIN (VALUES
+    ('electricidad@urbantic.bo', 'Elena', 'Vargas', '71400101'),
+    ('agua@urbantic.bo', 'Marco', 'Salazar', '71400102'),
+    ('vias@urbantic.bo', 'Luis', 'Rojas', '71400103'),
+    ('limpieza@urbantic.bo', 'Carla', 'Mendoza', '71400104')
+  ) AS seed(email, first_name, last_name, phone)
+  WHERE role.code = 'TECNICO'
+  ON CONFLICT (LOWER(email)) DO NOTHING;
+
+  INSERT INTO technician_categories (technician_id, category_id)
+  SELECT u.id, c.id
+  FROM users u
+  INNER JOIN roles role ON role.id = u.role_id AND role.code = 'TECNICO'
+  INNER JOIN report_categories c ON (
+    (LOWER(u.email) = 'electricidad@urbantic.bo' AND c.code IN ('LUMINARIA', 'SEMAFORO'))
+    OR (LOWER(u.email) = 'agua@urbantic.bo' AND c.code = 'AGUA')
+    OR (LOWER(u.email) = 'vias@urbantic.bo' AND c.code = 'BACHE')
+    OR (LOWER(u.email) = 'limpieza@urbantic.bo' AND c.code = 'BASURA')
+    OR (LOWER(u.email) = 'tecnico@urbantic.test')
+  )
+  ON CONFLICT (technician_id, category_id) DO NOTHING;
 
   INSERT INTO reports (id, citizen_id, category_id, title, description, location, zone, status, created_at)
   SELECT 12, u.id, c.id, 'Bache en avenida',

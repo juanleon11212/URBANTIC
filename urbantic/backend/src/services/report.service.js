@@ -48,7 +48,7 @@ async function create(user, payload) {
 async function assign(user, rawId, technicianId) {
   const id = parseId(rawId);
   const result = await reportModel.assign(id, Number(technicianId), Number(user.sub));
-  if (result.reason === 'technician') throw new AppError('Técnico no encontrado o inactivo.', 400);
+  if (result.reason === 'technician') throw new AppError('El técnico no está activo o no tiene la especialidad requerida para este reporte.', 400);
   if (result.reason === 'state') throw new AppError('Solo se puede asignar un reporte creado, en revisión o ya asignado.', 409);
   return result.report;
 }

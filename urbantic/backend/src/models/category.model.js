@@ -20,4 +20,12 @@ async function list(includeInactive = false) {
   return result.rows;
 }
 
-module.exports = { list };
+async function findActiveByIds(ids) {
+  const result = await db.query(
+    'SELECT id, code, name FROM report_categories WHERE is_active = TRUE AND id = ANY($1::int[]) ORDER BY name',
+    [ids]
+  );
+  return result.rows;
+}
+
+module.exports = { list, findActiveByIds };

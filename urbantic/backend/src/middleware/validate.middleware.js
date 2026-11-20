@@ -1,6 +1,8 @@
 const AppError = require('../utils/AppError');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const personNameRegex = /^\p{L}(?:[\p{L}' -]*\p{L})?$/u;
+const phoneRegex = /^\+?[0-9](?:[0-9 ()-]*[0-9])?$/;
 
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : value;
@@ -39,8 +41,21 @@ function validate(schema) {
         errors.push({ field, message: 'Debe ser una lista.' });
       }
 
+      if (Array.isArray(value) && rules.items === 'number' && value.some((item) => typeof item !== 'number' || !Number.isInteger(item))) {
+        errors.push({ field, message: 'Todos los elementos deben ser identificadores numéricos válidos.' });
+      }
+
+      if (rules.type === 'array' && Array.isArray(value) && rules.items === 'number'
+        && value.some((item) => typeof item !== 'number' || !Number.isInteger(item) || item <= 0)) {
+        errors.push({ field, message: 'La lista contiene identificadores inválidos.' });
+      }
+
       if (rules.email && !emailRegex.test(value)) {
         errors.push({ field, message: 'Debe ser un correo valido.' });
+      }
+
+      if (rules.pattern && typeof value === 'string' && !rules.pattern.test(value)) {
+        errors.push({ field, message: rules.patternMessage || 'El formato no es válido.' });
       }
 
       if (rules.min && value.length < rules.min) {
@@ -67,9 +82,9 @@ function validate(schema) {
 const registerSchema = {
   email: { required: true, type: 'string', email: true, max: 180 },
   password: { required: true, type: 'string', min: 8, max: 100 },
-  firstName: { required: true, type: 'string', min: 2, max: 100 },
-  lastName: { required: true, type: 'string', min: 2, max: 100 },
-  phone: { required: false, type: 'string', max: 30 }
+  firstName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  lastName: { required: true, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  phone: { required: false, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono sólo puede contener números y los símbolos +, espacio, paréntesis o guion.' }
 };
 
 const loginSchema = {
@@ -78,9 +93,9 @@ const loginSchema = {
 };
 
 const profileSchema = {
-  firstName: { required: false, type: 'string', min: 2, max: 100 },
-  lastName: { required: false, type: 'string', min: 2, max: 100 },
-  phone: { required: false, type: 'string', max: 30 }
+  firstName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  lastName: { required: false, type: 'string', min: 2, max: 100, pattern: personNameRegex, patternMessage: 'El apellido sólo puede contener letras, espacios, apóstrofes y guiones.' },
+  phone: { required: false, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono sólo puede contener números y los símbolos +, espacio, paréntesis o guion.' }
 };
 
 const reportSchema = {
@@ -119,10 +134,12 @@ const decisionSchema = {
 };
 
 const managedUserSchema = {
-  name: { required: true, type: 'string', min: 3, max: 201 },
+  name: { required: true, type: 'string', min: 3, max: 201, pattern: personNameRegex, patternMessage: 'El nombre sólo puede contener letras, espacios, apóstrofes y guiones.' },
   email: { required: true, type: 'string', email: true, max: 180 },
-  role: { required: true, type: 'string', enum: ['CIUDADANO', 'TECNICO', 'ADMINISTRADOR'] },
-  password: { required: true, type: 'string', min: 8, max: 100 }
+  password: { required: true, type: 'string', min: 8, max: 100 },
+  phone: { required: true, type: 'string', min: 7, max: 30, pattern: phoneRegex, patternMessage: 'El teléfono no tiene un formato válido.' },
+  categoryIds: { required: true, type: 'array', items: 'number', min: 1, max: 10 },
+  active: { required: false, type: 'boolean' }
 };
 
 const userStatusSchema = {

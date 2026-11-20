@@ -7,9 +7,9 @@ async function list(_req, res, next) {
   } catch (error) { next(error); }
 }
 
-async function technicians(_req, res, next) {
+async function technicians(req, res, next) {
   try {
-    const users = await userService.technicians();
+    const users = await userService.technicians(req.query.categoryId);
     res.json({ success: true, message: 'Técnicos obtenidos correctamente.', data: { users } });
   } catch (error) { next(error); }
 }

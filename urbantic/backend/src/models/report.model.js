@@ -37,11 +37,6 @@ const reportJoins = `
 `;
 
 function addVisibility(where, values, actor) {
-  if (actor.role === 'CIUDADANO') {
-    values.push(actor.id);
-    where.push(`r.citizen_id = $${values.length}`);
-  }
-
   if (actor.role === 'TECNICO') {
     values.push(actor.id);
     where.push(`r.assigned_to = $${values.length}`);
@@ -199,10 +194,12 @@ async function assign(reportId, technicianId, changedBy) {
         SELECT u.id
         FROM users u
         INNER JOIN roles r ON r.id = u.role_id
+        INNER JOIN technician_categories tc ON tc.technician_id = u.id
+        INNER JOIN reports target_report ON target_report.id = $2 AND target_report.category_id = tc.category_id
         WHERE u.id = $1 AND r.code = 'TECNICO' AND u.is_active = TRUE
         LIMIT 1
       `,
-      [technicianId]
+      [technicianId, reportId]
     );
     if (!technicianResult.rows[0]) {
       await client.query('ROLLBACK');
