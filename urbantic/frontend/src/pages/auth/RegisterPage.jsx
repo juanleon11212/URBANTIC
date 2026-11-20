@@ -62,10 +62,10 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="form">
           <div className="form-row">
             <label>Nombre
-              <input name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" minLength="2" maxLength="100" placeholder="Solo letras" required />
+              <input name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" minLength="2" maxLength="100" placeholder="Ej. Carlos" required />
             </label>
             <label>Apellido
-              <input name="lastName" value={form.lastName} onChange={handleChange} autoComplete="family-name" minLength="2" maxLength="100" placeholder="Solo letras" required />
+              <input name="lastName" value={form.lastName} onChange={handleChange} autoComplete="family-name" minLength="2" maxLength="100" placeholder="Ej. Rojas" required />
             </label>
           </div>
           <label>Teléfono <span className="optional-label">Opcional</span>

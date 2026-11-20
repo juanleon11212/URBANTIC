@@ -99,10 +99,10 @@ export default function RecoverPasswordPage() {
           <form onSubmit={verifyIdentity} className="form">
             <div className="form-row">
               <label>Nombre
-                <input name="firstName" value={identity.firstName} onChange={handleIdentityChange} autoComplete="given-name" minLength="2" maxLength="100" placeholder="Solo letras" required />
+                <input name="firstName" value={identity.firstName} onChange={handleIdentityChange} autoComplete="given-name" minLength="2" maxLength="100" placeholder="Ej. Carlos" required />
               </label>
               <label>Apellido
-                <input name="lastName" value={identity.lastName} onChange={handleIdentityChange} autoComplete="family-name" minLength="2" maxLength="100" placeholder="Solo letras" required />
+                <input name="lastName" value={identity.lastName} onChange={handleIdentityChange} autoComplete="family-name" minLength="2" maxLength="100" placeholder="Ej. Rojas" required />
               </label>
             </div>
             <label>Correo electrónico

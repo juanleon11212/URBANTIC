@@ -101,8 +101,8 @@ export default function ProfilePage() {
         </aside>
         <form onSubmit={handleSubmit} className={`form profile-form ${isEditing ? 'is-editing' : 'is-readonly'}`}>
           <div className="form-row">
-            <label>Nombre<input name="firstName" value={form.firstName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Solo letras" disabled={!isEditing} required /></label>
-            <label>Apellido<input name="lastName" value={form.lastName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Solo letras" disabled={!isEditing} required /></label>
+            <label>Nombre<input name="firstName" value={form.firstName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Ej. Carlos" disabled={!isEditing} required /></label>
+            <label>Apellido<input name="lastName" value={form.lastName} onChange={handleChange} minLength="2" maxLength="100" placeholder="Ej. Rojas" disabled={!isEditing} required /></label>
           </div>
           <label>Teléfono<input name="phone" type="tel" value={form.phone} onChange={handleChange} inputMode="tel" minLength="7" maxLength="30" placeholder="Ej. 71234567" disabled={!isEditing} /></label>
           <label>Correo<input value={user.email} disabled /></label>
