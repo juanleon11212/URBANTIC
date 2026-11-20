@@ -6,11 +6,13 @@ import { REPORT_TYPES } from '../../data/reportData.js';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
 import LocationPickerMap from '../../components/reports/LocationPickerMap.jsx';
+import { isMobileDevice } from '../../utils/deviceDetection.js';
 
 export default function CreateReportPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { createReport } = useReports();
+  const mobileDevice = isMobileDevice();
   const [form, setForm] = useState({ type: 'Bache', title: '', description: '', location: '', zone: '', latitude: null, longitude: null });
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState('');
@@ -151,10 +153,18 @@ export default function CreateReportPage() {
             <small>Usa la cámara o selecciona una imagen PNG o JPG · máximo 5 MB</small>
           </div>
           <div className="photo-source-actions">
-            <label className="button button-primary" htmlFor="report-camera-input">
-              <Icon name="camera" size={17} /> Tomar foto ahora
-            </label>
-            <input className="sr-only" id="report-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleImage} />
+            {mobileDevice ? (
+              <>
+                <label className="button button-primary" htmlFor="report-camera-input">
+                  <Icon name="camera" size={17} /> Tomar foto ahora
+                </label>
+                <input className="sr-only" id="report-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleImage} />
+              </>
+            ) : (
+              <button className="button button-ghost camera-desktop-disabled" type="button" disabled title="Abre esta página desde un celular para usar la cámara">
+                <Icon name="camera" size={17} /> Cámara disponible en celular
+              </button>
+            )}
             <label className="button button-outline" htmlFor="report-gallery-input">
               <Icon name="upload" size={17} /> Elegir de la galería
             </label>

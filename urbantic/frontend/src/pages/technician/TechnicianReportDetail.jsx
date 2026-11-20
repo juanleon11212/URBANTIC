@@ -7,6 +7,7 @@ import ReportEvidence from '../../components/reports/ReportEvidence.jsx';
 import ReportTimeline from '../../components/reports/ReportTimeline.jsx';
 import ReportLocationMap from '../../components/reports/ReportLocationMap.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import { isMobileDevice } from '../../utils/deviceDetection.js';
 
 function readImage(file) {
   return new Promise((resolve, reject) => {
@@ -21,6 +22,7 @@ export default function TechnicianReportDetail() {
   const { id } = useParams();
   const { user } = useAuth();
   const { getReport, fetchReport, updateReportStatus, loading } = useReports();
+  const mobileDevice = isMobileDevice();
   const report = getReport(id);
   const [observations, setObservations] = useState('');
   const [evidenceImages, setEvidenceImages] = useState([]);
@@ -163,10 +165,18 @@ export default function TechnicianReportDetail() {
                   <small>Hasta 5 archivos PNG o JPG · máximo 5 MB cada uno</small>
                 </div>
                 <div className="photo-source-actions">
-                  <label className="button button-primary" htmlFor="solution-camera-input">
-                    <Icon name="camera" size={17} /> Tomar foto ahora
-                  </label>
-                  <input className="sr-only" id="solution-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleEvidence} />
+                  {mobileDevice ? (
+                    <>
+                      <label className="button button-primary" htmlFor="solution-camera-input">
+                        <Icon name="camera" size={17} /> Tomar foto ahora
+                      </label>
+                      <input className="sr-only" id="solution-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleEvidence} />
+                    </>
+                  ) : (
+                    <button className="button button-ghost camera-desktop-disabled" type="button" disabled title="Abre esta página desde un celular para usar la cámara">
+                      <Icon name="camera" size={17} /> Cámara disponible en celular
+                    </button>
+                  )}
                   <label className="button button-outline" htmlFor="solution-gallery-input">
                     <Icon name="upload" size={17} /> Elegir de la galería
                   </label>
