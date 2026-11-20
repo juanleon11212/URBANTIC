@@ -63,9 +63,6 @@ export function AuthProvider({ children }) {
 
   async function signUp(payload) {
     const response = await authApi.register(payload);
-    localStorage.setItem('urbantic_token', response.data.token);
-    setToken(response.data.token);
-    setUser(response.data.user);
     return response.data.user;
   }
 
