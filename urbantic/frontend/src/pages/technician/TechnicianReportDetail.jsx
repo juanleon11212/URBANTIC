@@ -3,6 +3,8 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useReports } from '../../context/ReportsContext.jsx';
 import ReportSummary from '../../components/reports/ReportSummary.jsx';
+import ReportEvidence from '../../components/reports/ReportEvidence.jsx';
+import ReportTimeline from '../../components/reports/ReportTimeline.jsx';
 import Icon from '../../components/ui/Icon.jsx';
 
 function readImage(file) {
@@ -17,7 +19,7 @@ function readImage(file) {
 export default function TechnicianReportDetail() {
   const { id } = useParams();
   const { user } = useAuth();
-  const { getReport, updateReportStatus, loading } = useReports();
+  const { getReport, fetchReport, updateReportStatus, loading } = useReports();
   const report = getReport(id);
   const [observations, setObservations] = useState('');
   const [evidenceImages, setEvidenceImages] = useState([]);
@@ -26,12 +28,18 @@ export default function TechnicianReportDetail() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    fetchReport(id).catch((apiError) => {
+      setError(apiError.response?.data?.message || 'No se pudo actualizar el detalle de la tarea.');
+    });
+  }, [id]);
+
+  useEffect(() => {
     if (!report) return;
     setObservations(report.observations || '');
     setEvidenceImages(report.evidenceImages?.length ? report.evidenceImages : (report.evidence ? [report.evidence] : []));
   }, [report?.id, report?.observations, report?.evidence, report?.evidenceImages]);
 
-  if (loading) return <div className="screen-message inline-screen">Cargando tarea...</div>;
+  if (loading && !report) return <div className="screen-message inline-screen">Cargando tarea...</div>;
   if (!report || Number(report.assignedTo) !== Number(user.id)) return <Navigate to="/tecnico/tareas" replace />;
 
   async function handleEvidence(event) {
@@ -79,14 +87,22 @@ export default function TechnicianReportDetail() {
 
   async function resolveReport(event) {
     event.preventDefault();
-    setSaving(true);
     setMessage('');
     setError('');
+    if (observations.trim().length < 10) {
+      setError('Debe registrar una descripción de la solución de al menos 10 caracteres.');
+      return;
+    }
+    if (!evidenceImages.length) {
+      setError('Debe adjuntar una fotografía del problema solucionado.');
+      return;
+    }
+    setSaving(true);
     try {
-      await updateReportStatus(report.id, { status: 'RESUELTO', observations, evidenceImages });
-      setMessage('Reporte marcado como resuelto y enviado para validación.');
+      await updateReportStatus(report.id, { status: 'RESUELTO', observations: observations.trim(), evidenceImages });
+      setMessage('Reporte marcado como terminado y enviado para validación.');
     } catch (apiError) {
-      setError(apiError.response?.data?.message || 'No se pudo resolver el reporte.');
+      setError(apiError.response?.data?.message || 'No se pudo terminar el reporte.');
     } finally {
       setSaving(false);
     }
@@ -100,25 +116,16 @@ export default function TechnicianReportDetail() {
       <div className="technician-detail-grid">
         <section className="surface-card detail-card">
           <ReportSummary report={report} />
-          {report.observations && (
-            <div className="observation-card"><Icon name="tasks" size={20} /><div><strong>Observación técnica</strong><p>{report.observations}</p></div></div>
-          )}
-          {isFinished && evidenceImages.length > 0 && (
-            <div className="resolution-evidence">
-              <span className="eyebrow">Evidencia de resolución</span>
-              <div className="evidence-gallery">
-                {evidenceImages.map((image, index) => <img src={image} alt={`Evidencia ${index + 1}`} key={`${report.id}-${index}`} />)}
-              </div>
-            </div>
-          )}
+          {isFinished && <ReportEvidence report={report} />}
+          <ReportTimeline status={report.status} date={report.date} history={report.history} />
         </section>
 
         {report.status === 'ASIGNADO' && (
           <section className="surface-card update-panel start-work-panel">
             <div className="panel-heading"><span className="panel-icon orange"><Icon name="tasks" /></span><div><span className="eyebrow">Nueva asignación</span><h2>Iniciar atención</h2></div></div>
-            <p>Cuando estés listo para trabajar en esta incidencia, inicia la atención. El estado cambiará a “En proceso”.</p>
+            <p>Cuando estés listo, inicia la atención. El estado cambiará a “En proceso”.</p>
             {message && <p className="form-success"><Icon name="check" size={16} /> {message}</p>}
-            {error && <p className="form-error">{error}</p>}
+            {error && <p className="form-error panel-error">{error}</p>}
             <button className="button button-primary button-full" type="button" onClick={startWork} disabled={saving}><Icon name="tasks" size={17} /> {saving ? 'Iniciando...' : 'Iniciar trabajo'}</button>
           </section>
         )}
@@ -126,8 +133,14 @@ export default function TechnicianReportDetail() {
         {report.status === 'EN_PROCESO' && (
           <form className="surface-card update-panel" onSubmit={resolveReport}>
             <div className="panel-heading"><span className="panel-icon orange"><Icon name="check" /></span><div><span className="eyebrow">Trabajo en curso</span><h2>Registrar solución</h2></div></div>
-            <label>Observación técnica
-              <textarea value={observations} onChange={(event) => setObservations(event.target.value)} rows="5" minLength="10" placeholder="Describe el trabajo realizado y el resultado..." required />
+            <div className="requirements-card">
+              <strong>Para marcar como terminado</strong>
+              <span className={observations.trim().length >= 10 ? 'is-complete' : ''}><Icon name="check" size={14} /> Descripción de la solución</span>
+              <span className={evidenceImages.length > 0 ? 'is-complete' : ''}><Icon name="check" size={14} /> Al menos una fotografía final</span>
+            </div>
+            <label>Descripción de la solución
+              <textarea value={observations} onChange={(event) => setObservations(event.target.value)} rows="5" minLength="10" placeholder="Describe el trabajo realizado y cómo verificaste el resultado..." required />
+              <small className="field-counter">{observations.trim().length}/10 caracteres mínimos</small>
             </label>
             <span className="field-label">Fotos de la solución ({evidenceImages.length}/5)</span>
             {evidenceImages.length > 0 && (
@@ -149,8 +162,8 @@ export default function TechnicianReportDetail() {
               </label>
             )}
             {message && <p className="form-success"><Icon name="check" size={16} /> {message}</p>}
-            {error && <p className="form-error">{error}</p>}
-            <button className="button button-success button-full" type="submit" disabled={saving || observations.trim().length < 10 || evidenceImages.length === 0}><Icon name="check" size={17} /> {saving ? 'Guardando...' : 'Marcar como resuelto'}</button>
+            {error && <p className="form-error panel-error">{error}</p>}
+            <button className="button button-success button-full" type="submit" disabled={saving || observations.trim().length < 10 || evidenceImages.length === 0}><Icon name="check" size={17} /> {saving ? 'Guardando...' : 'Marcar como terminado'}</button>
           </form>
         )}
 
