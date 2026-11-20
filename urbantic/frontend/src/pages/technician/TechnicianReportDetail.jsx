@@ -5,6 +5,7 @@ import { useReports } from '../../context/ReportsContext.jsx';
 import ReportSummary from '../../components/reports/ReportSummary.jsx';
 import ReportEvidence from '../../components/reports/ReportEvidence.jsx';
 import ReportTimeline from '../../components/reports/ReportTimeline.jsx';
+import ReportLocationMap from '../../components/reports/ReportLocationMap.jsx';
 import Icon from '../../components/ui/Icon.jsx';
 
 function readImage(file) {
@@ -116,6 +117,7 @@ export default function TechnicianReportDetail() {
       <div className="technician-detail-grid">
         <section className="surface-card detail-card">
           <ReportSummary report={report} />
+          <ReportLocationMap report={report} />
           {isFinished && <ReportEvidence report={report} />}
           <ReportTimeline status={report.status} date={report.date} history={report.history} />
         </section>

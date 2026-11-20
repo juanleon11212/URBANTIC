@@ -399,6 +399,19 @@ label, .field-label {
 .map-popup strong { color: var(--navy); font-size: .75rem; }
 .map-popup span { color: var(--muted); font-size: .65rem; }
 .map-loading { align-items: center; background: #edf3f1; border: 1px solid #d7e1dd; border-radius: 10px; color: #667d74; display: flex; font-size: .75rem; font-weight: 700; height: 250px; justify-content: center; }
+.technician-location-section { border-top: 1px solid var(--border); margin-top: 25px; padding-top: 22px; }
+.technician-location-heading { margin-bottom: 14px; }
+.technician-location-heading h2 { margin: 0; }
+.technician-location-map { border: 1px solid #cfdae0; border-radius: 10px; height: 300px; overflow: hidden; width: 100%; z-index: 1; }
+.technician-location-address { align-items: flex-start; background: #f4f8fa; border: 1px solid #dce7ec; border-radius: 9px; color: var(--blue); display: flex; gap: 10px; margin-top: 10px; padding: 11px 13px; }
+.technician-location-address svg { flex: 0 0 auto; margin-top: 1px; }
+.technician-location-address div { display: grid; gap: 3px; }
+.technician-location-address strong { color: #304b5a; font-size: .72rem; }
+.technician-location-address span { color: var(--muted); font-size: .64rem; }
+.location-unavailable { align-items: flex-start; background: #f7f9fa; border: 1px dashed #cad7de; border-radius: 10px; color: #718793; display: flex; gap: 12px; padding: 17px; }
+.location-unavailable div { display: grid; gap: 4px; }
+.location-unavailable strong { color: #405966; font-size: .74rem; }
+.location-unavailable p { color: var(--muted); font-size: .67rem; margin: 0; }
 .stats-error { margin-top: 12px; }
 
 .profile-layout { display: grid; gap: 35px; grid-template-columns: 230px minmax(0, 560px); }
