@@ -145,12 +145,21 @@ export default function CreateReportPage() {
 
         <div className="upload-column">
           <span className="field-label">Fotografía</span>
-          <label className={`upload-zone ${image ? 'has-image' : ''}`}>
+          <div className={`upload-zone photo-preview-zone ${image ? 'has-image' : ''}`}>
             {image ? <img src={image} alt="Vista previa de la evidencia" /> : <Icon name="camera" size={40} />}
-            <strong>{imageName || 'Arrastra una imagen o haz clic'}</strong>
-            <small>PNG o JPG · máximo 5 MB</small>
-            <input type="file" accept="image/png,image/jpeg" onChange={handleImage} />
-          </label>
+            <strong>{imageName || 'Agrega una fotografía del problema'}</strong>
+            <small>Usa la cámara o selecciona una imagen PNG o JPG · máximo 5 MB</small>
+          </div>
+          <div className="photo-source-actions">
+            <label className="button button-primary" htmlFor="report-camera-input">
+              <Icon name="camera" size={17} /> Tomar foto ahora
+            </label>
+            <input className="sr-only" id="report-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleImage} />
+            <label className="button button-outline" htmlFor="report-gallery-input">
+              <Icon name="upload" size={17} /> Elegir de la galería
+            </label>
+            <input className="sr-only" id="report-gallery-input" type="file" accept="image/png,image/jpeg" onChange={handleImage} />
+          </div>
           {imageError && <p className="form-error" role="alert">{imageError}</p>}
           <div className="tip-card">
             <Icon name="alert" size={20} />

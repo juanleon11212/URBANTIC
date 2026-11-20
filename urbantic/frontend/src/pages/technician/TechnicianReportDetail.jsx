@@ -156,12 +156,23 @@ export default function TechnicianReportDetail() {
               </div>
             )}
             {evidenceImages.length < 5 && (
-              <label className="upload-zone upload-zone-small multi-upload">
-                <Icon name="camera" size={34} />
-                <strong>Agregar fotografías</strong>
-                <small>Hasta 5 archivos PNG o JPG · máximo 5 MB cada uno</small>
-                <input type="file" multiple accept="image/png,image/jpeg" onChange={handleEvidence} />
-              </label>
+              <div className="technician-photo-capture">
+                <div className="upload-zone upload-zone-small multi-upload photo-preview-zone">
+                  <Icon name="camera" size={34} />
+                  <strong>Agregar fotografías de la solución</strong>
+                  <small>Hasta 5 archivos PNG o JPG · máximo 5 MB cada uno</small>
+                </div>
+                <div className="photo-source-actions">
+                  <label className="button button-primary" htmlFor="solution-camera-input">
+                    <Icon name="camera" size={17} /> Tomar foto ahora
+                  </label>
+                  <input className="sr-only" id="solution-camera-input" type="file" accept="image/png,image/jpeg" capture="environment" onChange={handleEvidence} />
+                  <label className="button button-outline" htmlFor="solution-gallery-input">
+                    <Icon name="upload" size={17} /> Elegir de la galería
+                  </label>
+                  <input className="sr-only" id="solution-gallery-input" type="file" multiple accept="image/png,image/jpeg" onChange={handleEvidence} />
+                </div>
+              </div>
             )}
             {message && <p className="form-success"><Icon name="check" size={16} /> {message}</p>}
             {error && <p className="form-error panel-error">{error}</p>}
