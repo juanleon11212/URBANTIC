@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
 import { useReports } from '../../context/ReportsContext.jsx';
 import ReportSummary from '../../components/reports/ReportSummary.jsx';
 import ReportEvidence from '../../components/reports/ReportEvidence.jsx';
@@ -9,7 +8,6 @@ import Icon from '../../components/ui/Icon.jsx';
 
 export default function CitizenReportDetail() {
   const { id } = useParams();
-  const { user } = useAuth();
   const { getReport, fetchReport, loading } = useReports();
   const report = getReport(id);
   const [detailError, setDetailError] = useState('');
@@ -21,11 +19,11 @@ export default function CitizenReportDetail() {
   }, [id]);
 
   if (loading && !report) return <div className="screen-message inline-screen">Cargando reporte...</div>;
-  if (!report || Number(report.citizenId) !== Number(user.id)) return <Navigate to="/ciudadano/reportes" replace />;
+  if (!report) return <Navigate to="/ciudadano/reportes" replace />;
 
   return (
     <div className="page-stack">
-      <Link className="back-link" to="/ciudadano/reportes">← Volver a mis reportes</Link>
+      <Link className="back-link" to="/ciudadano/reportes">← Volver a reportes ciudadanos</Link>
       {detailError && <p className="form-error panel-error">{detailError}</p>}
       <section className="surface-card detail-card">
         <ReportSummary report={report} />

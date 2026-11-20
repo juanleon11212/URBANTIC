@@ -5,7 +5,7 @@ import Icon from '../ui/Icon.jsx';
 const roleLinks = {
   CIUDADANO: [
     { to: '/ciudadano', label: 'Inicio', icon: 'home', end: true },
-    { to: '/ciudadano/reportes', label: 'Mis reportes', icon: 'reports', end: true },
+    { to: '/ciudadano/reportes', label: 'Reportes ciudadanos', icon: 'reports', end: true },
     { to: '/ciudadano/reportes/nuevo', label: 'Crear reporte', icon: 'add' }
   ],
   ADMINISTRADOR: [

@@ -9,18 +9,26 @@ import Icon from '../../components/ui/Icon.jsx';
 export default function ReportsCiudadano() {
   const { user } = useAuth();
   const { reports } = useReports();
+  const [scope, setScope] = useState('TODOS');
   const [status, setStatus] = useState('TODOS');
+  const [search, setSearch] = useState('');
 
-  const ownReports = useMemo(() => reports.filter((report) => (
-    report.citizenId === user.id && (status === 'TODOS' || report.status === status)
-  )), [reports, status, user.id]);
+  const filteredReports = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return reports.filter((report) => {
+      const matchesScope = scope === 'TODOS' || Number(report.citizenId) === Number(user.id);
+      const matchesStatus = status === 'TODOS' || report.status === status;
+      const matchesSearch = !term || `${report.id} ${report.title} ${report.type} ${report.location} ${report.zone || ''}`.toLowerCase().includes(term);
+      return matchesScope && matchesStatus && matchesSearch;
+    });
+  }, [reports, scope, search, status, user.id]);
 
   return (
     <section className="surface-card page-card">
       <PageHeader
         eyebrow="Participación ciudadana"
-        title="Mis reportes"
-        description="Consulta el estado y seguimiento de las incidencias que reportaste."
+        title="Reportes ciudadanos"
+        description="Consulta los reportes de toda la comunidad o filtra únicamente los que tú registraste."
         action={(
           <Link className="button button-primary" to="/ciudadano/reportes/nuevo">
             <Icon name="add" size={17} /> Nuevo reporte
@@ -28,7 +36,14 @@ export default function ReportsCiudadano() {
         )}
       />
 
-      <div className="filter-bar simple-filter">
+      <div className="filter-bar citizen-report-filters">
+        <label>
+          Mostrar
+          <select value={scope} onChange={(event) => setScope(event.target.value)}>
+            <option value="TODOS">Todos los ciudadanos</option>
+            <option value="MIOS">Sólo mis reportes</option>
+          </select>
+        </label>
         <label>
           Estado
           <select value={status} onChange={(event) => setStatus(event.target.value)}>
@@ -36,13 +51,22 @@ export default function ReportsCiudadano() {
             <option value="EN_REVISION">En revisión</option>
             <option value="ASIGNADO">Asignado</option>
             <option value="EN_PROCESO">En proceso</option>
-            <option value="RESUELTO">Resuelto</option>
+            <option value="RESUELTO">Terminado</option>
+            <option value="CERRADO">Cerrado</option>
+            <option value="RECHAZADO">Rechazado</option>
           </select>
         </label>
-        <span className="result-count">{ownReports.length} resultado{ownReports.length === 1 ? '' : 's'}</span>
+        <label className="search-field">Buscar
+          <span><Icon name="search" size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Código, título o ubicación..." /></span>
+        </label>
+        <span className="result-count">{filteredReports.length} resultado{filteredReports.length === 1 ? '' : 's'}</span>
       </div>
 
-      <ReportTable reports={ownReports} showZone={false} getViewPath={(report) => `/ciudadano/reportes/${report.id}`} />
+      <ReportTable
+        reports={filteredReports}
+        getViewPath={(report) => `/ciudadano/reportes/${report.id}`}
+        emptyMessage="No hay reportes que coincidan con los filtros seleccionados."
+      />
     </section>
   );
 }
