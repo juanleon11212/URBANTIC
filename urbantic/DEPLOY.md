@@ -79,10 +79,17 @@ paso el login aun no funcionara. El `vercel.json` permite recargar rutas como
 | Variable | Valor |
 | --- | --- |
 | `DATABASE_URL` | Cadena de Neon con sus parametros SSL |
-| `FRONTEND_URL` | URL estable de Vercel, sin `/` final ni rutas |
+| `FRONTEND_URL` | Origen estable de Vercel, sin `/` final ni rutas |
 
 El Blueprint genera `JWT_SECRET` automaticamente. El servidor ya acepta `PORT`,
 que Render proporciona; no hace falta definir `BACKEND_PORT` en Render.
+Para permitir tambien una URL de preview de Vercel, agregar ambos origenes
+separados por coma en `FRONTEND_URL`, sin rutas ni barras finales. Se admite
+`*` como comodin de un segmento del dominio. Por ejemplo:
+
+```text
+https://urbantic-frontend-vercel.vercel.app,https://urbantic-frontend-vercel-*-juanleon11212s-projects.vercel.app
+```
 
 4. Desplegar y esperar a que el servicio este disponible.
 5. Abrir `https://TU-SERVICIO.onrender.com/api/health`. Debe devolver
@@ -101,8 +108,8 @@ VITE_API_URL=https://TU-SERVICIO.onrender.com/api
 
 Reemplazar el dominio por el real y conservar `/api`. Hacer **Redeploy**:
 Vite incorpora esta variable al compilar, por lo que cambiarla sin recompilar
-no actualiza la aplicacion. Usar la URL estable de produccion para probar;
-las URLs temporales de preview no coinciden con el origen CORS configurado.
+no actualiza la aplicacion. Para probar una URL de preview, incluir tambien
+su origen en `FRONTEND_URL` de Render.
 
 `DATABASE_URL` y `JWT_SECRET` pertenecen solo a Render. No agregarlos al frontend.
 
@@ -117,6 +124,7 @@ las URLs temporales de preview no coinciden con el origen CORS configurado.
 
 Si aparece un error CORS, comprobar que `FRONTEND_URL` coincida exactamente
 con el origen de la pagina abierta, incluido `https://` y sin barra final.
+Se admiten varios origenes separados por coma.
 Si el navegador intenta llamar a `localhost:4000`, revisar `VITE_API_URL`
 en el entorno correcto de Vercel y volver a desplegar.
 

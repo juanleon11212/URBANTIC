@@ -9,9 +9,24 @@ const notificationRoutes = require('./routes/notification.routes');
 const errorHandler = require('./middleware/error.middleware');
 
 const app = express();
+const frontendOriginPatterns = env.frontendUrl
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+  .map((origin) => {
+    const escaped = origin
+      .split('*')
+      .map((part) => part.replace(/[|\\{}()[\]^$+?.]/g, '\\$&'))
+      .join('[^.]+');
+
+    return new RegExp(`^${escaped}$`);
+  });
 
 app.use(cors({
-  origin: env.frontendUrl,
+  origin: (origin, callback) => {
+    const allowed = !origin || frontendOriginPatterns.some((pattern) => pattern.test(origin));
+    callback(null, allowed);
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '40mb' }));
