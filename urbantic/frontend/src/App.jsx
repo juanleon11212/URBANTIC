@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar.jsx';
 import Sidebar from './components/layout/Sidebar.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import RegisterPage from './pages/auth/RegisterPage.jsx';
+import RecoverPasswordPage from './pages/auth/RecoverPasswordPage.jsx';
 import DashboardCiudadano from './pages/citizen/DashboardCiudadano.jsx';
 import ReportsCiudadano from './pages/citizen/ReportsCiudadano.jsx';
 import CreateReportPage from './pages/citizen/CreateReportPage.jsx';
@@ -85,6 +86,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/recuperar-contrasena" element={<RecoverPasswordPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/*" element={<ProtectedLayout />} />
         </Route>

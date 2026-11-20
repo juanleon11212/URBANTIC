@@ -52,6 +52,15 @@ export default function LoginPage() {
             </div>
           </div>
         )}
+        {location.state?.passwordResetSuccess && (
+          <div className="auth-success" role="status">
+            <Icon name="check" size={18} />
+            <div>
+              <strong>Contraseña actualizada</strong>
+              <span>Ya puedes ingresar con tu nueva contraseña.</span>
+            </div>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="form">
           <label>
             Correo electrónico
@@ -61,6 +70,7 @@ export default function LoginPage() {
             Contraseña
             <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="••••••••" autoComplete="current-password" required />
           </label>
+          <Link className="forgot-password-link" to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
           {error && <p className="form-error panel-error" role="alert">{error}</p>}
           <button className="button button-primary button-full" type="submit" disabled={submitting}>
             {submitting ? 'Ingresando...' : 'Ingresar'}

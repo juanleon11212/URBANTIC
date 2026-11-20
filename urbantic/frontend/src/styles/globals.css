@@ -428,6 +428,11 @@ label, .field-label {
 .auth-intro { color: var(--muted); font-size: .76rem; margin-bottom: 22px; text-align: center; }
 .auth-switch { color: var(--muted); font-size: .72rem; margin: 20px 0 0; text-align: center; }
 .auth-switch a { margin-left: 3px; }
+.forgot-password-link { font-size: .7rem; justify-self: end; margin-top: -5px; }
+.recovery-step { color: var(--blue); display: block; font-size: .65rem; font-weight: 800; letter-spacing: .08em; margin: -7px 0 8px; text-align: center; text-transform: uppercase; }
+.verified-identity { align-items: center; background: #e9f8f1; border: 1px solid #bde5d2; border-radius: 8px; color: #28705a; display: flex; font-size: .7rem; gap: 8px; padding: 10px 12px; }
+.verified-identity svg { color: #13815f; flex: 0 0 auto; }
+.verified-identity strong { color: #155c47; }
 
 .auth-success { align-items: flex-start; background: #e9f8f1; border: 1px solid #bde5d2; border-radius: 9px; color: #137152; display: flex; font-size: .72rem; gap: 10px; margin: -5px 0 18px; padding: 12px; }
 .auth-success svg { flex: 0 0 auto; margin-top: 1px; }

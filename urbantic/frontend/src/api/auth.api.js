@@ -10,6 +10,16 @@ export async function login(payload) {
   return response.data;
 }
 
+export async function verifyPasswordRecoveryIdentity(payload) {
+  const response = await api.post('/auth/password-recovery/verify', payload);
+  return response.data;
+}
+
+export async function resetPassword(payload) {
+  const response = await api.post('/auth/password-recovery/reset', payload);
+  return response.data;
+}
+
 export async function me() {
   const response = await api.get('/auth/me');
   return response.data;
