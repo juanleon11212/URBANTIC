@@ -59,6 +59,28 @@ input:focus, select:focus, textarea:focus {
 
 input:disabled { background: #f5f7f9; color: #667986; }
 
+.password-field { display: block; position: relative; width: 100%; }
+.password-field input { padding-right: 48px; }
+.password-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #687d89;
+  display: inline-flex;
+  height: 34px;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+}
+.password-toggle:hover, .password-toggle:focus-visible { background: #eaf4f8; box-shadow: none; color: var(--blue-dark); transform: translateY(-50%); }
+.password-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+
 label, .field-label {
   color: #304958;
   display: grid;
@@ -479,6 +501,10 @@ label, .field-label {
 .credentials-card dt { color: #748b80; font-size: .59rem; font-weight: 800; text-transform: uppercase; }
 .credentials-card dd { color: #27483a; font-size: .72rem; font-weight: 700; margin: 0; overflow-wrap: anywhere; }
 .credential-password { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .03em; }
+.credential-secret { align-items: center; display: flex; gap: 8px; }
+.credential-toggle { align-items: center; background: transparent; border: 0; border-radius: 6px; color: #527264; display: inline-flex; flex: 0 0 auto; height: 28px; justify-content: center; min-height: 28px; padding: 0; width: 30px; }
+.credential-toggle:hover, .credential-toggle:focus-visible { background: #e4f3eb; box-shadow: none; color: #167252; transform: none; }
+.credential-toggle:focus-visible { outline: 2px solid #2d9670; outline-offset: 1px; }
 .credentials-card .button { justify-self: end; }
 .role-pill { background: #eef3f6; border: 1px solid #dae4e9; border-radius: 999px; color: #506774; display: inline-flex; font-size: .62rem; font-weight: 800; padding: 5px 8px; }
 .user-contact { color: #425a68; display: grid; font-size: .67rem; gap: 3px; }

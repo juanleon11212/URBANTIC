@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export default function LoginPage() {
           </label>
           <label>
             Contraseña
-            <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••••" autoComplete="current-password" required />
+            <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="••••••••" autoComplete="current-password" required />
           </label>
           {error && <p className="form-error panel-error" role="alert">{error}</p>}
           <button className="button button-primary button-full" type="submit" disabled={submitting}>

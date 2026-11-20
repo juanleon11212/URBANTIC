@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import { getApiErrorMessage, isValidPersonName, isValidPhone, sanitizePersonName, sanitizePhone } from '../../utils/inputValidation.js';
 
 export default function RegisterPage() {
@@ -74,7 +75,7 @@ export default function RegisterPage() {
             <input name="email" type="email" value={form.email} onChange={handleChange} autoComplete="email" placeholder="tu@correo.com" required />
           </label>
           <label>Contraseña
-            <input name="password" type="password" value={form.password} onChange={handleChange} autoComplete="new-password" minLength="8" placeholder="Mínimo 8 caracteres" required />
+            <PasswordInput name="password" value={form.password} onChange={handleChange} autoComplete="new-password" minLength="8" placeholder="Mínimo 8 caracteres" required />
           </label>
           <p className="form-note"><Icon name="check" size={14} /> Tu cuenta se creará con el rol Ciudadano.</p>
           {error && <p className="form-error panel-error" role="alert">{error}</p>}

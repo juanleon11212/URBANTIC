@@ -3,6 +3,7 @@ import * as usersApi from '../../api/users.api.js';
 import * as categoriesApi from '../../api/categories.api.js';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import { getApiErrorMessage, isValidPersonName, isValidPhone, sanitizePersonName, sanitizePhone } from '../../utils/inputValidation.js';
 
 const emptyForm = { name: '', email: '', password: '', phone: '', categoryIds: [], active: true };
@@ -20,6 +21,7 @@ export default function UsersAdmin() {
   const [message, setMessage] = useState('');
   const [createdCredentials, setCreatedCredentials] = useState(null);
   const [credentialsCopied, setCredentialsCopied] = useState(false);
+  const [credentialPasswordVisible, setCredentialPasswordVisible] = useState(false);
 
   useEffect(() => {
     Promise.all([usersApi.list(), categoriesApi.list()])
@@ -67,6 +69,7 @@ export default function UsersAdmin() {
     setMessage('');
     setCreatedCredentials(null);
     setCredentialsCopied(false);
+    setCredentialPasswordVisible(false);
 
     if (!isValidPersonName(form.name, 3)) {
       setError('El nombre debe tener al menos 3 caracteres y contener solamente letras.');
@@ -139,7 +142,7 @@ export default function UsersAdmin() {
               <input type="tel" value={form.phone} onChange={(event) => setForm({ ...form, phone: sanitizePhone(event.target.value) })} inputMode="tel" minLength="7" maxLength="30" placeholder="Ej. 71400105" required />
             </label>
             <label>Contraseña temporal
-              <input type="password" minLength="8" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} autoComplete="new-password" placeholder="Mínimo 8 caracteres" required />
+              <PasswordInput minLength="8" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} autoComplete="new-password" placeholder="Mínimo 8 caracteres" required />
             </label>
           </div>
 
@@ -176,7 +179,22 @@ export default function UsersAdmin() {
           <dl>
             <div><dt>Nombre</dt><dd>{createdCredentials.name}</dd></div>
             <div><dt>Correo</dt><dd>{createdCredentials.email}</dd></div>
-            <div><dt>Contraseña temporal</dt><dd className="credential-password">{createdCredentials.password}</dd></div>
+            <div>
+              <dt>Contraseña temporal</dt>
+              <dd className="credential-secret">
+                <span className="credential-password">{credentialPasswordVisible ? createdCredentials.password : '••••••••••••'}</span>
+                <button
+                  className="credential-toggle"
+                  type="button"
+                  aria-label={credentialPasswordVisible ? 'Ocultar contraseña temporal' : 'Mostrar contraseña temporal'}
+                  title={credentialPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-pressed={credentialPasswordVisible}
+                  onClick={() => setCredentialPasswordVisible((visible) => !visible)}
+                >
+                  <Icon name={credentialPasswordVisible ? 'eyeOff' : 'eye'} size={17} />
+                </button>
+              </dd>
+            </div>
             <div><dt>Especialidades</dt><dd>{createdCredentials.specialties.join(', ')}</dd></div>
           </dl>
           <button className="button button-outline" type="button" onClick={copyCredentials}>
