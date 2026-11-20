@@ -5,11 +5,13 @@ import { REPORT_PRIORITIES } from '../../data/reportData.js';
 import * as usersApi from '../../api/users.api.js';
 import * as categoriesApi from '../../api/categories.api.js';
 import ReportSummary from '../../components/reports/ReportSummary.jsx';
+import ReportEvidence from '../../components/reports/ReportEvidence.jsx';
+import ReportTimeline from '../../components/reports/ReportTimeline.jsx';
 import Icon from '../../components/ui/Icon.jsx';
 
 export default function AdminReportDetail() {
   const { id } = useParams();
-  const { getReport, assignReport, classifyReport, decideReport, loading } = useReports();
+  const { getReport, fetchReport, assignReport, classifyReport, decideReport, loading } = useReports();
   const report = getReport(id);
   const [technician, setTechnician] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -28,7 +30,10 @@ export default function AdminReportDetail() {
         setCategories(categoryList);
       })
       .catch(() => setError('No se pudieron cargar los datos de gestión.'));
-  }, []);
+    fetchReport(id).catch((apiError) => {
+      setError(apiError.response?.data?.message || 'No se pudo actualizar el detalle del reporte.');
+    });
+  }, [id]);
 
   useEffect(() => {
     if (!report) return;
@@ -37,16 +42,15 @@ export default function AdminReportDetail() {
     setPriority(report.priority || 'MEDIA');
   }, [report?.id, report?.assignedTo, report?.categoryId, report?.priority]);
 
-  if (loading) return <div className="screen-message inline-screen">Cargando reporte...</div>;
+  if (loading && !report) return <div className="screen-message inline-screen">Cargando reporte...</div>;
   if (!report) return <Navigate to="/admin/reportes" replace />;
 
   const canClassify = ['CREADO', 'EN_REVISION'].includes(report.status);
   const canAssign = ['CREADO', 'EN_REVISION', 'ASIGNADO'].includes(report.status);
   const canReject = ['CREADO', 'EN_REVISION'].includes(report.status);
   const canClose = report.status === 'RESUELTO';
-  const evidenceImages = report.evidenceImages?.length
-    ? report.evidenceImages
-    : (report.evidence ? [report.evidence] : []);
+  const evidenceImages = report.evidenceImages?.length ? report.evidenceImages : (report.evidence ? [report.evidence] : []);
+  const closeRequirementsMet = evidenceImages.length > 0 && Boolean(report.observations && report.technicianName && report.resolvedAt);
 
   function beginAction() {
     setSaving(true);
@@ -85,7 +89,7 @@ export default function AdminReportDetail() {
     try {
       await decideReport(report.id, { decision, reason });
       setReason('');
-      setMessage(decision === 'CERRADO' ? 'Solución validada y reporte cerrado.' : 'Reporte rechazado con el motivo indicado.');
+      setMessage(decision === 'CERRADO' ? 'Reporte cerrado correctamente.' : 'Reporte rechazado con el motivo indicado.');
     } catch (apiError) {
       setError(apiError.response?.data?.message || 'No se pudo registrar la decisión.');
     } finally {
@@ -99,17 +103,8 @@ export default function AdminReportDetail() {
       <div className="admin-detail-grid">
         <section className="surface-card detail-card">
           <ReportSummary report={report} />
-          {report.observations && (
-            <div className="observation-card"><Icon name="tasks" size={20} /><div><strong>Observación técnica</strong><p>{report.observations}</p></div></div>
-          )}
-          {evidenceImages.length > 0 && (
-            <div className="resolution-evidence">
-              <span className="eyebrow">Evidencia de resolución</span>
-              <div className="evidence-gallery">
-                {evidenceImages.map((image, index) => <img src={image} alt={`Evidencia de resolución ${index + 1}`} key={`${report.id}-${index}`} />)}
-              </div>
-            </div>
-          )}
+          <ReportEvidence report={report} />
+          <ReportTimeline status={report.status} date={report.date} history={report.history} />
         </section>
 
         <aside className="action-panel">
@@ -151,11 +146,12 @@ export default function AdminReportDetail() {
             <section className="surface-card compact-card decision-card">
               <span className="panel-icon decision-icon"><Icon name={canClose ? 'check' : 'alert'} /></span>
               <h2>{canClose ? 'Validar solución' : 'Revisar procedencia'}</h2>
-              <p>{canClose ? 'Verifica la evidencia del técnico antes de cerrar.' : 'Si el reporte es improcedente, registra un motivo claro.'}</p>
+              <p>{canClose ? 'Verifica la evidencia, descripción, fecha y técnico responsable antes de cerrar.' : 'Si el reporte es improcedente, registra un motivo claro.'}</p>
               <label>{canClose ? 'Nota de validación (opcional)' : 'Motivo del rechazo'}
                 <textarea value={reason} onChange={(event) => setReason(event.target.value)} rows="3" placeholder={canClose ? 'La solución fue verificada...' : 'Explica por qué no corresponde atenderlo...'} />
               </label>
-              {canClose && <button className="button button-success button-full" type="button" onClick={() => registerDecision('CERRADO')} disabled={saving}><Icon name="check" size={17} /> Cerrar reporte</button>}
+              {canClose && !closeRequirementsMet && <p className="form-error">No se puede cerrar: falta evidencia, descripción, fecha o técnico responsable.</p>}
+              {canClose && <button className="button button-success button-full" type="button" onClick={() => registerDecision('CERRADO')} disabled={saving || !closeRequirementsMet}><Icon name="check" size={17} /> Cerrar reporte</button>}
               {canReject && <button className="button button-danger button-full" type="button" onClick={() => registerDecision('RECHAZADO')} disabled={saving || reason.trim().length < 5}><Icon name="close" size={17} /> Rechazar reporte</button>}
             </section>
           )}
