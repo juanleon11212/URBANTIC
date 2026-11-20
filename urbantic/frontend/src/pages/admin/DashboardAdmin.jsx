@@ -35,7 +35,7 @@ export default function DashboardAdmin() {
     <div className="page-stack">
       <section className="hero-card admin-hero">
         <div>
-          <span className="eyebrow">Vista general · Sprint 3</span>
+          <span className="eyebrow">Vista general</span>
           <h1>Panel administrador</h1>
           <p>Bienvenido, {user.first_name}. Prioriza incidencias, distribuye la carga y analiza los puntos críticos de la ciudad.</p>
         </div>
