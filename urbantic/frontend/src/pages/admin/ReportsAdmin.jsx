@@ -25,7 +25,7 @@ export default function ReportsAdmin() {
     <section className="surface-card page-card">
       <PageHeader eyebrow="Operaciones" title="Todos los reportes" description="Filtra, prioriza y coordina las incidencias recibidas por la ciudadanía." />
 
-      <div className="filter-bar admin-filters sprint3-filters">
+      <div className="filter-bar admin-filters admin-report-filters">
         <label>Tipo
           <select name="type" value={filters.type} onChange={setFilter}>
             <option value="TODOS">Todos</option>

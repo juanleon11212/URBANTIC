@@ -40,7 +40,6 @@ export default function Sidebar() {
       </nav>
       <div className="sidebar-footer">
         <span>URBANTIC</span>
-        <small>Gestión urbana · 2026</small>
       </div>
     </aside>
   );
