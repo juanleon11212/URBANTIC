@@ -39,7 +39,6 @@ export default function DashboardAdmin() {
           <h1>Panel administrador</h1>
           <p>Bienvenido, {user.first_name}. Prioriza incidencias, distribuye la carga y analiza los puntos críticos de la ciudad.</p>
         </div>
-        <div className="hero-date"><Icon name="clock" size={18} /> Actualizado ahora</div>
       </section>
 
       <section className="stats-grid stats-grid-4" aria-label="Indicadores del sistema">

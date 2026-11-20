@@ -197,7 +197,6 @@ label, .field-label {
 .hero-card > * { position: relative; z-index: 1; }
 .admin-hero { background: linear-gradient(130deg, #fff, #eef5fb); }
 .technician-hero { background: linear-gradient(130deg, #fff, #eefaf7); }
-.hero-date { align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 20px; color: var(--muted); display: flex; font-size: .73rem; font-weight: 700; gap: 6px; padding: 9px 13px; }
 
 .eyebrow { color: var(--blue); display: block; font-size: .67rem; font-weight: 800; letter-spacing: .1em; margin-bottom: 7px; text-transform: uppercase; }
 .page-header { align-items: flex-end; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 23px; }
@@ -595,7 +594,6 @@ label, .field-label {
   .hero-card { min-height: 0; padding: 20px 17px; }
   .hero-card h1 { font-size: 1.45rem; }
   .hero-card p { line-height: 1.55; }
-  .hero-date { justify-content: center; width: 100%; }
   .page-header { align-items: stretch; flex-direction: column; }
   .page-header-action .button { width: 100%; }
   .stats-grid-3, .stats-grid-4 { grid-template-columns: 1fr; }
