@@ -18,6 +18,7 @@ import DashboardTecnico from './pages/technician/DashboardTecnico.jsx';
 import TasksTecnico from './pages/technician/TasksTecnico.jsx';
 import TechnicianReportDetail from './pages/technician/TechnicianReportDetail.jsx';
 import ProfilePage from './pages/shared/ProfilePage.jsx';
+import NotificationsPage from './pages/shared/NotificationsPage.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import RoleRoute from './routes/RoleRoute.jsx';
 import { useAuth } from './context/AuthContext.jsx';
@@ -56,6 +57,7 @@ function ProtectedLayout() {
               <Route path="/tecnico/tareas" element={<TasksTecnico />} />
               <Route path="/tecnico/tareas/:id" element={<TechnicianReportDetail />} />
             </Route>
+            <Route path="/notificaciones" element={<NotificationsPage />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="*" element={<HomeRedirect />} />
           </Routes>

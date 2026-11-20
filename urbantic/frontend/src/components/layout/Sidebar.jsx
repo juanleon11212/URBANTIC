@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useNotifications } from '../../context/NotificationsContext.jsx';
 import Icon from '../ui/Icon.jsx';
 
 const roleLinks = {
@@ -22,6 +23,7 @@ const roleLinks = {
 
 export default function Sidebar() {
   const { user } = useAuth();
+  const { unreadCount } = useNotifications();
   const links = roleLinks[user?.role] || [];
 
   return (
@@ -33,6 +35,11 @@ export default function Sidebar() {
             <span>{link.label}</span>
           </NavLink>
         ))}
+        <NavLink to="/notificaciones">
+          <Icon name="bell" size={19} />
+          <span>Notificaciones</span>
+          {unreadCount > 0 && <small className="sidebar-notification-count">{unreadCount > 99 ? '99+' : unreadCount}</small>}
+        </NavLink>
         <NavLink to="/perfil">
           <Icon name="user" size={19} />
           <span>Perfil</span>
