@@ -396,7 +396,7 @@ async function updateStatus(reportId, actor, payload) {
         `
           INSERT INTO notifications (user_id, report_id, type, title, message)
           SELECT citizen_id, id, $2, $3,
-            CONCAT($4, ' Reporte #', LPAD(id::text, 4, '0'), ': ', title)
+            CONCAT($4::text, ' Reporte #', LPAD(id::text, 4, '0'), ': ', title)
           FROM reports
           WHERE id = $1
         `,
