@@ -73,6 +73,18 @@ const applicationSchema = `
     assigned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
+  CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    report_id INTEGER REFERENCES reports(id) ON DELETE SET NULL,
+    type VARCHAR(40) NOT NULL,
+    title VARCHAR(120) NOT NULL,
+    message VARCHAR(500) NOT NULL,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    read_at TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS urbantic_migrations (
     code VARCHAR(80) PRIMARY KEY,
     applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -87,6 +99,8 @@ const applicationSchema = `
   CREATE INDEX IF NOT EXISTS report_assignments_report_id_index ON report_assignments(report_id);
   CREATE INDEX IF NOT EXISTS report_assignments_technician_id_index ON report_assignments(technician_id);
   CREATE INDEX IF NOT EXISTS technician_categories_category_id_index ON technician_categories(category_id);
+  CREATE INDEX IF NOT EXISTS notifications_user_created_index ON notifications(user_id, created_at DESC);
+  CREATE INDEX IF NOT EXISTS notifications_user_unread_index ON notifications(user_id, is_read);
 
   INSERT INTO report_categories (code, name, color)
   VALUES

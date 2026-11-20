@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth.routes');
 const reportRoutes = require('./routes/report.routes');
 const userRoutes = require('./routes/user.routes');
 const categoryRoutes = require('./routes/category.routes');
+const notificationRoutes = require('./routes/notification.routes');
 const errorHandler = require('./middleware/error.middleware');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({
