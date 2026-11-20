@@ -11,7 +11,7 @@ export const REPORT_STATUSES = {
   EN_REVISION: { label: 'En revisión', tone: 'warning' },
   ASIGNADO: { label: 'Asignado', tone: 'info' },
   EN_PROCESO: { label: 'En proceso', tone: 'orange' },
-  RESUELTO: { label: 'Resuelto', tone: 'success' },
+  RESUELTO: { label: 'Terminado', tone: 'success' },
   CERRADO: { label: 'Cerrado', tone: 'neutral' },
   RECHAZADO: { label: 'Rechazado', tone: 'danger' }
 };

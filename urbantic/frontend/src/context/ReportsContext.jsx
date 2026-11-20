@@ -57,6 +57,17 @@ export function ReportsProvider({ children }) {
     }
   }
 
+  async function fetchReport(id) {
+    const report = await reportsApi.getById(id);
+    setReports((current) => {
+      const exists = current.some((item) => item.id === report.id);
+      return exists
+        ? current.map((item) => item.id === report.id ? report : item)
+        : [report, ...current];
+    });
+    return report;
+  }
+
   async function createReport(payload) {
     const report = await reportsApi.create(payload);
     setReports((current) => [report, ...current]);
@@ -92,6 +103,7 @@ export function ReportsProvider({ children }) {
     loading: loading || (isAuthenticated && loadedFor !== scopeKey),
     error,
     refreshReports,
+    fetchReport,
     createReport,
     assignReport,
     classifyReport,

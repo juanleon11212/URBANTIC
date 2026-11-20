@@ -19,10 +19,11 @@ export default function ReportSummary({ report }) {
       <div className="report-summary">
         <ReportVisual report={report} large />
         <dl className="detail-list">
-          <div><dt>Tipo</dt><dd>{report.type}</dd></div>
+          <div><dt>Categoría</dt><dd>{report.type}</dd></div>
           <div><dt>Ubicación</dt><dd>{report.location}</dd></div>
-          <div><dt>Zona</dt><dd>{report.zone}</dd></div>
-          <div><dt>Fecha</dt><dd>{report.date}</dd></div>
+          <div><dt>Zona</dt><dd>{report.zone || 'No especificada'}</dd></div>
+          <div><dt>Creado</dt><dd>{report.date}</dd></div>
+          {report.citizenName && <div><dt>Reportado por</dt><dd>{report.citizenName}</dd></div>}
           {report.technicianName && <div><dt>Técnico</dt><dd>{report.technicianName}</dd></div>}
           <div className="detail-description"><dt>Descripción</dt><dd>{report.description}</dd></div>
           {report.rejectionReason && <div className="detail-description rejection-detail"><dt>Motivo de rechazo</dt><dd>{report.rejectionReason}</dd></div>}
