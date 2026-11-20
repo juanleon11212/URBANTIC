@@ -30,3 +30,28 @@ export function getStatus(status) {
 export function getPriority(priority) {
   return REPORT_PRIORITIES[priority] || REPORT_PRIORITIES.MEDIA;
 }
+
+const FINAL_REPORT_STATUSES = new Set(['RESUELTO', 'CERRADO', 'RECHAZADO']);
+const PRIORITY_ORDER = { CRITICA: 0, ALTA: 1, MEDIA: 2, BAJA: 3 };
+
+export function sortCitizenReports(reports) {
+  return [...reports].sort((first, second) => {
+    const firstIsFinal = FINAL_REPORT_STATUSES.has(first.status) ? 1 : 0;
+    const secondIsFinal = FINAL_REPORT_STATUSES.has(second.status) ? 1 : 0;
+
+    if (firstIsFinal !== secondIsFinal) {
+      return firstIsFinal - secondIsFinal;
+    }
+
+    if (!firstIsFinal) {
+      const priorityDifference = (PRIORITY_ORDER[first.priority] ?? PRIORITY_ORDER.MEDIA)
+        - (PRIORITY_ORDER[second.priority] ?? PRIORITY_ORDER.MEDIA);
+      if (priorityDifference !== 0) return priorityDifference;
+    }
+
+    const dateDifference = new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime();
+    if (dateDifference !== 0) return dateDifference;
+
+    return Number(second.id) - Number(first.id);
+  });
+}

@@ -5,12 +5,13 @@ import ReportTable from '../../components/reports/ReportTable.jsx';
 import StatCard from '../../components/ui/StatCard.jsx';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import { sortCitizenReports } from '../../data/reportData.js';
 
 export default function DashboardCiudadano() {
   const { user } = useAuth();
   const { reports } = useReports();
   const ownReports = reports.filter((report) => Number(report.citizenId) === Number(user.id));
-  const recentCitizenReports = [...reports].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const orderedCitizenReports = sortCitizenReports(reports);
 
   return (
     <div className="page-stack">
@@ -35,12 +36,12 @@ export default function DashboardCiudadano() {
       <section className="surface-card">
         <PageHeader
           eyebrow="Actividad ciudadana"
-          title="Reportes recientes de la comunidad"
-          description="Consulta las incidencias registradas por otros ciudadanos y conoce su estado actual."
+          title="Reportes prioritarios de la comunidad"
+          description="Los casos activos aparecen por prioridad y los terminados se muestran al final."
           action={<Link className="text-link" to="/ciudadano/reportes">Ver todos <Icon name="arrow" size={15} /></Link>}
         />
         <ReportTable
-          reports={recentCitizenReports.slice(0, 6)}
+          reports={orderedCitizenReports.slice(0, 6)}
           getViewPath={(report) => `/ciudadano/reportes/${report.id}`}
           emptyMessage="Todavía no existen reportes ciudadanos. Sé el primero en registrar uno."
         />

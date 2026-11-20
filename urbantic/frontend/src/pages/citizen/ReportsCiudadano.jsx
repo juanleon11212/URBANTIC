@@ -5,6 +5,7 @@ import { useReports } from '../../context/ReportsContext.jsx';
 import ReportTable from '../../components/reports/ReportTable.jsx';
 import PageHeader from '../../components/ui/PageHeader.jsx';
 import Icon from '../../components/ui/Icon.jsx';
+import { sortCitizenReports } from '../../data/reportData.js';
 
 export default function ReportsCiudadano() {
   const { user } = useAuth();
@@ -15,12 +16,13 @@ export default function ReportsCiudadano() {
 
   const filteredReports = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return reports.filter((report) => {
+    const matchingReports = reports.filter((report) => {
       const matchesScope = scope === 'TODOS' || Number(report.citizenId) === Number(user.id);
       const matchesStatus = status === 'TODOS' || report.status === status;
       const matchesSearch = !term || `${report.id} ${report.title} ${report.type} ${report.location} ${report.zone || ''}`.toLowerCase().includes(term);
       return matchesScope && matchesStatus && matchesSearch;
     });
+    return sortCitizenReports(matchingReports);
   }, [reports, scope, search, status, user.id]);
 
   return (
@@ -28,7 +30,7 @@ export default function ReportsCiudadano() {
       <PageHeader
         eyebrow="Participación ciudadana"
         title="Reportes ciudadanos"
-        description="Consulta los reportes de toda la comunidad o filtra únicamente los que tú registraste."
+        description="Los reportes activos y prioritarios aparecen primero; los terminados quedan al final."
         action={(
           <Link className="button button-primary" to="/ciudadano/reportes/nuevo">
             <Icon name="add" size={17} /> Nuevo reporte
