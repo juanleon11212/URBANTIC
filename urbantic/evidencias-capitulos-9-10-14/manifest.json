@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-11-16T01:04:56.134Z",
+  "reportId": "0015",
+  "generated": {
+    "CAP-01": [
+      "CAP-01-docker-compose-iniciado.png"
+    ],
+    "CAP-02": [
+      "CAP-02-contenedores-activos.png"
+    ],
+    "CAP-04": [
+      "CAP-04-healthcheck-backend.png"
+    ],
+    "CAP-03": [
+      "CAP-03-frontend-local-localhost-8081.png"
+    ],
+    "CAP-05": [
+      "CAP-05-pantalla-inicio-sesion.png"
+    ],
+    "CAP-06": [
+      "CAP-06-interfaz-ciudadano.png"
+    ],
+    "CAP-07": [
+      "CAP-07-creacion-reporte-formulario.png"
+    ],
+    "CAP-08": [
+      "CAP-08-mapa-ubicacion-seleccionada.png"
+    ],
+    "CAP-09": [
+      "CAP-09-reporte-ciudadano-registrado.png"
+    ],
+    "CAP-10": [
+      "CAP-10-panel-administrador.png"
+    ],
+    "CAP-11": [
+      "CAP-11-clasificacion-administrativa.png"
+    ],
+    "CAP-12": [
+      "CAP-12-asignacion-tecnico.png"
+    ],
+    "CAP-13": [
+      "CAP-13-panel-tecnico-bandeja.png"
+    ],
+    "CAP-14": [
+      "CAP-14-atencion-reporte-en-proceso.png"
+    ],
+    "CAP-15": [
+      "CAP-15-resolucion-descripcion-fotografia.png"
+    ],
+    "CAP-16": [
+      "CAP-16-reporte-resuelto.png"
+    ],
+    "CAP-17": [
+      "CAP-17-estadisticas-administrativas.png"
+    ],
+    "CAP-18": [
+      "CAP-18-mapa-incidencias.png"
+    ],
+    "CAP-23": [
+      "CAP-23-comunicacion-frontend-backend.png"
+    ],
+    "CAP-24": [
+      "CAP-24-backend-conectado-postgresql.png"
+    ],
+    "CAP-25": [
+      "CAP-25-registro-postgresql-reporte.png"
+    ],
+    "CAP-27": [
+      "CAP-27-uso-recursos-docker.png"
+    ],
+    "CAP-28": [
+      "CAP-28-tiempo-respuesta-api.png"
+    ],
+    "CAP-29": [
+      "CAP-29-reinicio-servicios-recuperacion.png"
+    ],
+    "CAP-30": [
+      "CAP-30-seguridad-jwt-contra-sin-token.png"
+    ],
+    "CAP-31": [
+      "CAP-31-validacion-rol-ciudadano-denegado.png"
+    ],
+    "CAP-32": [
+      "CAP-32-persistencia-volumen-down-up.png"
+    ],
+    "CAP-33": [
+      "CAP-33-estructura-repositorio.png"
+    ],
+    "CAP-34": [
+      "CAP-34-docker-compose-servicios-puertos.png"
+    ],
+    "CAP-35": [
+      "CAP-35-variables-entorno-ocultas.png"
+    ],
+    "CAP-36": [
+      "CAP-36-construccion-contenedores.png"
+    ],
+    "CAP-37": [
+      "CAP-37-ejecucion-docker-compose-up.png"
+    ],
+    "CAP-38": [
+      "CAP-38-verificacion-docker-compose-ps.png"
+    ],
+    "CAP-39": [
+      "CAP-39-verificacion-healthcheck.png"
+    ],
+    "CAP-40": [
+      "CAP-40-acceso-frontend-local.png"
+    ],
+    "CAP-41": [
+      "CAP-41-postgresql-puerto-5433.png"
+    ]
+  },
+  "pending": {
+    "CAP-19": "Requiere un despliegue real y acceso al panel de Vercel.",
+    "CAP-20": "Requiere un servicio desplegado y acceso a Render.",
+    "CAP-21": "La base actual es PostgreSQL local; no hay un proyecto Neon conectado.",
+    "CAP-22": "No existe una URL pública configurada en este repositorio.",
+    "CAP-26": "Requiere la aplicación pública comunicándose por HTTPS con Render.",
+    "CAP-42": "Depende de completar Vercel, Render y Neon."
+  }
+}
