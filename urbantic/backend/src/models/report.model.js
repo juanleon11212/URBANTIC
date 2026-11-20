@@ -233,6 +233,17 @@ async function assign(reportId, technicianId, changedBy) {
        VALUES ($1, $2, $3, 'Técnico asignado al reporte')`,
       [reportId, result.rows[0].status, changedBy]
     );
+
+    await client.query(
+      `
+        INSERT INTO notifications (user_id, report_id, type, title, message)
+        SELECT $2, r.id, 'REPORT_ASSIGNED', 'Nuevo trabajo asignado',
+          CONCAT('Se te asignó el reporte #', LPAD(r.id::text, 4, '0'), ': ', r.title)
+        FROM reports r
+        WHERE r.id = $1
+      `,
+      [reportId, technicianId]
+    );
     await client.query('COMMIT');
   } catch (error) {
     await client.query('ROLLBACK');
@@ -345,6 +356,53 @@ async function updateStatus(reportId, actor, payload) {
        VALUES ($1, $2, $3, $4)`,
       [reportId, payload.status, actor.id, payload.observations || 'Estado actualizado']
     );
+
+    if (payload.status === 'RESUELTO' && actor.role === 'TECNICO') {
+      await client.query(
+        `
+          INSERT INTO notifications (user_id, report_id, type, title, message)
+          SELECT administrator.id, report.id, 'REPORT_RESOLVED', 'Labor técnica terminada',
+            CONCAT(
+              technician.first_name, ' ', technician.last_name,
+              ' terminó el reporte #', LPAD(report.id::text, 4, '0'), ': ', report.title,
+              '. Requiere validación administrativa.'
+            )
+          FROM reports report
+          INNER JOIN users technician ON technician.id = $2
+          CROSS JOIN users administrator
+          INNER JOIN roles administrator_role ON administrator_role.id = administrator.role_id
+          WHERE report.id = $1
+            AND administrator_role.code = 'ADMINISTRADOR'
+            AND administrator.is_active = TRUE
+        `,
+        [reportId, actor.id]
+      );
+    }
+
+    if (['CERRADO', 'RECHAZADO'].includes(payload.status)) {
+      const notification = payload.status === 'CERRADO'
+        ? {
+          type: 'REPORT_CLOSED',
+          title: 'Tu reporte fue concluido',
+          message: 'El trabajo fue revisado y el reporte quedó cerrado correctamente.'
+        }
+        : {
+          type: 'REPORT_REJECTED',
+          title: 'Tu reporte fue rechazado',
+          message: payload.rejectionReason || 'El reporte fue revisado y no corresponde continuar con su atención.'
+        };
+
+      await client.query(
+        `
+          INSERT INTO notifications (user_id, report_id, type, title, message)
+          SELECT citizen_id, id, $2, $3,
+            CONCAT($4, ' Reporte #', LPAD(id::text, 4, '0'), ': ', title)
+          FROM reports
+          WHERE id = $1
+        `,
+        [reportId, notification.type, notification.title, notification.message]
+      );
+    }
     await client.query('COMMIT');
   } catch (error) {
     await client.query('ROLLBACK');
