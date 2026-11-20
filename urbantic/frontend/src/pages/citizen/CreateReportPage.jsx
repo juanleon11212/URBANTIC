@@ -14,6 +14,7 @@ export default function CreateReportPage() {
   const [form, setForm] = useState({ type: 'Bache', title: '', description: '', location: '', zone: '', latitude: null, longitude: null });
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState('');
+  const [imageError, setImageError] = useState('');
   const [locating, setLocating] = useState(false);
   const [locationMessage, setLocationMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -26,8 +27,15 @@ export default function CreateReportPage() {
   function handleImage(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    setImageError('');
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      setImageError('La fotografía debe ser un archivo PNG o JPG.');
+      event.target.value = '';
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) {
-      setLocationMessage('La imagen debe pesar menos de 5 MB.');
+      setImageError('La fotografía debe pesar menos de 5 MB.');
+      event.target.value = '';
       return;
     }
     const reader = new FileReader();
@@ -79,6 +87,10 @@ export default function CreateReportPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (!image) {
+      setImageError('Debe adjuntar una fotografía del problema.');
+      return;
+    }
     setSubmitting(true);
     setError('');
     try {
@@ -139,6 +151,7 @@ export default function CreateReportPage() {
             <small>PNG o JPG · máximo 5 MB</small>
             <input type="file" accept="image/png,image/jpeg" onChange={handleImage} />
           </label>
+          {imageError && <p className="form-error" role="alert">{imageError}</p>}
           <div className="tip-card">
             <Icon name="alert" size={20} />
             <div><strong>Consejo para una buena foto</strong><p>Procura mostrar el problema completo y una referencia del lugar.</p></div>
